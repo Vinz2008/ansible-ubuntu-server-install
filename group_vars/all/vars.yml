@@ -1,0 +1,37 @@
+username: vincent
+
+hostname: ansible-ubuntu
+
+docker_compose_dir: /opt/docker/compose
+
+share_root: /home/vincent
+
+packages:
+  - htop
+  - neofetch
+  - speedtest-cli
+  - git
+  - neovim
+  - ncdu
+  - rsync
+  - syncthing
+
+services:
+  - portainer
+  - dashdot
+  - homarr
+  - jackett
+  - flaresolverr
+  - jellyseer
+  - kavita
+  - radarr
+  - sonarr
+  - bazarr
+  - prowlarr
+  - transmission
+  - code-server
+  - ouroboros
+  - hakuneko
+  - nextcloud
+
+keyboard_layout: fr

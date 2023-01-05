@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - name: system
+      tags:
+        - system
+    - name: docker
+      tags:
+        - containers
+    - name: jellyfin
+      tags:
+        - jellyfin

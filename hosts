@@ -1,0 +1,2 @@
+[home]
+homeserver ansible_host=192.168.122.245 ansible_user=vincent ansible_connection=ssh

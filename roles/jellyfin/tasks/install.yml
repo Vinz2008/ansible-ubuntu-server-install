@@ -1,0 +1,45 @@
+- name: Install apt-transport-https and gpg
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2  # required for Ansible's apt_key module
+    state: present
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Import Jellyfin Team GPG key
+  apt_key:
+    url: https://repo.jellyfin.org/debian/jellyfin_team.gpg.key
+    state: present
+  register: apt_key_result
+  retries: 3
+  until: apt_key_result is succeeded
+
+- name: Add Jellyfin repository
+  apt_repository:
+    repo: >
+      deb https://repo.jellyfin.org/{{ ansible_distribution | lower }}
+      {{ ansible_distribution_release }} main
+    state: present
+
+- name: Install Jellyfin
+  apt:
+    update_cache: true
+    name:
+      - jellyfin
+      # required for Ansible's xml module
+      - python{{ "3" if ansible_python.version.major == 3 }}-lxml
+    state: present
+  register: apt_result
+  retries: 3
+  until: apt_result is succeeded
+
+- name: Enable Jellyfin
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - jellyfin
+...

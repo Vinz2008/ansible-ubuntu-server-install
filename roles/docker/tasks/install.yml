@@ -1,0 +1,65 @@
+- name: Install aptitude
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+
+- name: Install required packages
+  package:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: true
+
+- name: Install Docker Module for Python
+  pip:
+    name: 
+    - docker
+    - docker-compose
+- name: Install latest passlib with pip
+  pip: 
+    name: passlib
+
+
+- name: Make sure that the docker folders exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "{{ docker_compose_dir }}"
+
+- name: Copy the compose file
+  template: 
+    src: templates/compose.yaml
+    dest: "{{ docker_compose_dir }}/compose.yaml"
+  vars:
+    app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
+
+- name: Docker-compose up
+  community.docker.docker_compose:
+    project_src: "{{ docker_compose_dir }}"
+
