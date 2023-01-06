@@ -1,0 +1,148 @@
+
+- name: Create working directory on Ansible Controller
+  file:
+    path: "{{ Iso.Workingdir }}"
+    state: directory
+    mode: "755"
+
+
+
+- name: Check if Ubuntu ISO exists locally on Ansible Controller
+  stat:
+    path: "{{ Iso.Workingdir }}/{{ Iso.UbuntuISO }}"
+  register: installerfilecheck
+
+
+- name: Download Ubuntu ISO if ISO file doesn't exist locally
+  get_url:
+    url: "{{ Iso.UbuntuISO_URL }}{{ Iso.UbuntuISO }}"
+    dest: "{{ Iso.Workingdir }}/{{ Iso.UbuntuISO }}"
+    mode: "755"
+  when:
+    - not installerfilecheck.stat.exists
+
+
+- name: Extract Ubuntu ISO
+  command: "xorriso -osirrox on -indev {{ Iso.Workingdir }}/{{ Iso.UbuntuISO }} \
+                           -extract / {{ Iso.Workingdir }}/ISO"
+  changed_when: false
+
+
+- name: Fix extracted ISO mode
+  file:
+    path: "{{ Iso.Workingdir }}/ISO"
+    mode: "u+w"
+    recurse: yes
+    follow: no
+  changed_when: false
+
+- name: Delete the [BOOT] folder
+  file:
+    path: "{{ Iso.Workingdir }}/ISO/[BOOT]"
+    state: absent
+
+- name: Enable HWE kernel in ISOLinux bootloader
+  replace:
+    path: "{{ item }}"
+    regexp: '/casper/(vmlinuz|initrd)'
+    replace: '/casper/hwe-\1'
+  with_items:
+    - "{{ Iso.Workingdir }}/ISO/isolinux/txt.cfg"
+  when: enable_hwe_kernel | default(False)
+
+- name: Enable HWE kernel in GRUB bootloader
+  replace:
+    path: "{{ item }}"
+    regexp: '/casper/(vmlinuz|initrd)'
+    replace: '/casper/hwe-\1'
+  with_items:
+    - "{{ Iso.Workingdir }}/ISO/boot/grub/grub.cfg"
+    - "{{ Iso.Workingdir }}/ISO/boot/grub/loopback.cfg"
+  when: enable_hwe_kernel | default(False)
+
+- name: Add the autoinstall parameter to the ISOLinux bootloader
+  replace:
+    path: "{{ item }}"
+    regexp: "---$"
+    replace: " autoinstall   ds=nocloud;s=/cdrom/nocloud/  ---"
+  with_items:
+    - "{{ Iso.Workingdir }}/ISO/isolinux/txt.cfg"
+
+- name: Add the autoinstall parameter to the GRUB bootloader
+  replace:
+    path: "{{ item }}"
+    regexp: "---$"
+    replace: " autoinstall   ds=nocloud\\;s=/cdrom/nocloud/  ---"
+  with_items:
+    - "{{ Iso.Workingdir }}/ISO/boot/grub/grub.cfg"
+    - "{{ Iso.Workingdir }}/ISO/boot/grub/loopback.cfg"
+  
+## Start workaround issue with Ubuntu autoinstall
+## Details of the issue and the workaround: https://askubuntu.com/questions/1394441/ubuntu-20-04-3-autoinstall-with-embedded-user-data-crashing-i-got-workaround
+
+- name: Extract the Packages.gz file on Ubuntu ISO
+  command: "gunzip -f {{ Iso.Workingdir }}/ISO/dists/focal/main/binary-amd64/Packages.gz --keep"
+  changed_when: false
+  when: false
+
+## End workaround issue with Ubuntu autoinstall
+
+- name: Create the nocloud directory
+  file:
+    path: "{{ Iso.Workingdir }}/ISO/nocloud"
+    state: directory
+
+- name: Copy user-data file(s) to directory
+  template:
+    src: Ubuntu_user-data.j2
+    dest: "{{ Iso.Workingdir }}/ISO/nocloud/user-data"
+
+- name: Create an empty meta-data file(s)
+  file:
+    path: "{{ Iso.Workingdir }}/ISO/nocloud/meta-data"
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+
+- name: Calculate the new MD5 hashes
+  stat:
+    path: "{{ item }}"
+    checksum_algorithm: md5
+  with_items:
+    - "{{ Iso.Workingdir }}/ISO/boot/grub/grub.cfg"
+    - "{{ Iso.Workingdir }}/ISO/boot/grub/loopback.cfg"
+    - "{{ Iso.Workingdir }}/ISO/isolinux/txt.cfg"
+  register: md5sums
+
+- name: Write the new MD5 hash (grub.cfg)
+  lineinfile:
+    line: "{{ md5sums.results[0].stat.checksum }}  ./boot/grub/grub.cfg"
+    search_string: /boot/grub/grub.cfg
+    path: "{{ Iso.Workingdir }}/ISO/md5sum.txt"
+
+- name: Write the new MD5 hash (loopback.cfg)
+  lineinfile:
+    line: "{{ md5sums.results[1].stat.checksum }}  ./boot/grub/loopback.cfg"
+    search_string: loopback.cfg
+    path: "{{ Iso.Workingdir }}/ISO/md5sum.txt"
+
+- name: Write the new MD5 hash (isolinux/txt.cfg)
+  lineinfile:
+    line: "{{ md5sums.results[2].stat.checksum }}  ./isolinux/txt.cfg"
+    search_string: isolinux/txt.cfg
+    path: "{{ Iso.Workingdir }}/ISO/md5sum.txt"
+
+
+- name: Create custom Ubuntu ISO(s)
+  shell:
+    cmd: "cd {{ Iso.Workingdir }}/ISO && xorriso -as mkisofs -D -r -V ubuntu-autoinstall_amd64 -cache-inodes -J -l -joliet-long -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot -o {{ Iso.Workingdir }}/{{ Iso.Name }}.iso ."
+
+- name: Delete original iso
+  file:
+    path: "{{ Iso.Workingdir }}/{{ Iso.UbuntuISO }}"
+    state: absent
+
+- name: Delete iso folder
+  file:
+    path: "{{ Iso.Workingdir }}/ISO"
+    state: absent

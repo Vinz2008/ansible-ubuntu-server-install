@@ -1,0 +1,10 @@
+- name: Copy network configuration file(s) to Ubuntu VM(s)
+  template:
+    src: Ubuntu_Netplan.j2
+    dest: /etc/netplan/00-installer-config.yaml
+    owner: root
+    group: root
+    mode: 0644
+    notify: Apply netplan config
+
+- meta: flush_handlers

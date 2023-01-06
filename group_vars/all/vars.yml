@@ -15,6 +15,7 @@ packages:
   - ncdu
   - rsync
   - syncthing
+  - zfsutils-linux
 
 services:
   - portainer
@@ -35,3 +36,26 @@ services:
   - nextcloud
 
 keyboard_layout: fr
+
+
+# for iso creating
+
+Iso:
+  Workingdir: "{{ lookup('env','HOME') }}/ubuntu-iso-generating-temp"
+  UbuntuISO: focal-live-server-amd64.iso                # Ubuntu ISO filename
+  UbuntuISO_URL: https://cdimage.ubuntu.com/ubuntu-server/focal/daily-live/current/   # Ubuntu ISO URL
+  Name: ubuntu-nas
+  Config:
+    OS:
+      User: vincent
+      Password: default
+      Hostname: ubuntu-nas                # Ubuntu OS hostname
+      Locale: fr_FR                            # Ubuntu OS locale
+      Keyboardlayout: fr                       # Ubuntu OS keyboard layout
+      Keyboardvariant: fr                      # Ubuntu OS keyboard variant
+      IPv4Address: 192.168.122.245            # Ubuntu OS IPv4 address
+      IPv4Gateway: 192.168.122.255                  # Ubuntu OS IPv4 gateway
+      IPv4DNS: 8.8.8.8                      # Ubuntu OS DNS server
+      Interface: enp1s0
+
+enable_hwe_kernel: false

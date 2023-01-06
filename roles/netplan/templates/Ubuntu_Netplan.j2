@@ -1,0 +1,10 @@
+network:
+  ethernets:
+    ens192:
+      addresses:
+      - {{ Iso.Config.OS.IPv4Address }} 
+      gateway4: {{ Iso.Config.OS.IPv4Gateway }}
+      nameservers:
+        addresses:
+        - {{ Iso.Config.OS.IPv4DNS }}
+  version: 2
