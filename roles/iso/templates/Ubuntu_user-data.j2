@@ -9,7 +9,7 @@ autoinstall:
     network:
       version: 2
       ethernets:
-        ${{ Iso.Config.OS.Interface }}:
+        {{ Iso.Config.OS.Interface }}:
           addresses: [{{ Iso.Config.OS.IPv4Address }}/24]
           gateway4: {{ Iso.Config.OS.IPv4Gateway }}
           nameservers:
