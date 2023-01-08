@@ -32,8 +32,9 @@ services:
   - transmission
   - code-server
   - ouroboros
-  - hakuneko
   - nextcloud
+
+# removed hakuneko because the docker container doesn't work for now
 
 keyboard_layout: fr
 

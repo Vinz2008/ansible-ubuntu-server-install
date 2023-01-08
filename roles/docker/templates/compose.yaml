@@ -165,22 +165,6 @@ services:
       - /home/vincent/code-server/config:/config
     ports:
       - 8443:8443
-  hakuneko:
-    image: shlagevuk/hakuneko
-    container_name: hakuneko
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
-      - "GUAC_USER={{ username }}" #optional
-      - "GUAC_PASS={{ password | md5 }}"
-      - cap-add=CAP_SYS_ADMIN 
-      - APPNAME="hakuneko-desktop" 
-    volumes:
-      - /home/vincent/hakuneko/config:/config
-    ports:
-      - 8083:8080
   mariadb_nextcloud:
     image: "mariadb:latest"
     restart: "on-failure"
