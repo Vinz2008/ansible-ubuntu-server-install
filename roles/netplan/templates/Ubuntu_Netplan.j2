@@ -1,8 +1,8 @@
 network:
   ethernets:
-    ens192:
+    enp1s0:
       addresses:
-      - {{ Iso.Config.OS.IPv4Address }} 
+      - {{ Iso.Config.OS.IPv4Address }}/24
       gateway4: {{ Iso.Config.OS.IPv4Gateway }}
       nameservers:
         addresses:

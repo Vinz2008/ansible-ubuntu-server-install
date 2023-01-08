@@ -23,3 +23,14 @@
 - name: Set the hostname
   hostname:
     name: "{{ hostname }}"
+  
+- name: Install Samba packages
+  package:
+    name:
+      - samba-common
+      - samba
+      - samba-client
+    state: present
+
+- name: Create Samba user
+  shell: "printf '{{ password }}\n{{ password }}\n' | smbpasswd -a -s {{ username }}"

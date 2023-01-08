@@ -11,6 +11,8 @@ services:
     ports:
       - 9943:9943
       - 9003:8000
+      - 9000:9000
+
   dashdot:
     image: mauricenino/dashdot
     container_name: dashdot
@@ -171,26 +173,68 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
-      - GUAC_USER={{ username }} #optional
+      - "GUAC_USER={{ username }}" #optional
+      - "GUAC_PASS={{ password | md5 }}"
       - cap-add=CAP_SYS_ADMIN 
       - APPNAME="hakuneko-desktop" 
     volumes:
       - /home/vincent/hakuneko/config:/config
     ports:
       - 8083:8080
-  nextcloud:
-    image: lscr.io/linuxserver/nextcloud:latest
-    container_name: nextcloud
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
+  mariadb_nextcloud:
+    image: "mariadb:latest"
+    restart: "on-failure"
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
-      - /home/vincent/nextcloud/config:/config
-      - "{{ share_root }}/files:/data"
+      - mariadb_data:/var/lib/mysql
+    environment:
+      - "MARIADB_ROOT_PASSWORD={{ password }}"
+      - MYSQL_DATABASE=nextcloud
+      - "MARIADB_USER=nextcloud"
+      - "MARIADB_PASSWORD={{ password }}"
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: unless-stopped
+    links:
+      - mariadb_nextcloud
+    environment:
+      - "MYSQL_PASSWORD={{ password }}"
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=mariadb_nextcloud
+    volumes:
+      - /home/vincent/nextcloud/config:/var/www/html/config
+      - "{{ share_root }}/files:/var/www/html/data"
     ports:
       - 8084:443
+
+
+  papermc:
+    image: marctv/minecraft-papermc-server:latest
+    container_name: mcserver
+    restart: unless-stopped
+    environment:
+      - MEMORYSIZE='1G'
+    volumes:
+      - /home/vincent/mcserver:/data:rw
+    ports:
+      - 25565:25565
+
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    environment:
+      - PUID=1000 #optional
+      - PGID=1000 #optional
+      - TZ=Europe/London
+      - SUBDOMAINS={{ duckdns_domain}}
+      - TOKEN={{ duckdns_token }}
+      - LOG_FILE=false #optional
+    volumes:
+      - /home/vincent/duckdns/config:/config #optional
     restart: unless-stopped
 
 volumes:
   portainer_data:
+  mariadb_data:

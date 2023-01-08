@@ -42,6 +42,11 @@
   pip: 
     name: passlib
 
+- name: Adding user to docker group
+  user: 
+    name: "{{ username }}"
+    groups: docker
+    append: yes
 
 - name: Make sure that the docker folders exists
   ansible.builtin.file:
