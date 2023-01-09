@@ -189,7 +189,7 @@ services:
       - MYSQL_HOST=mariadb_nextcloud
     volumes:
       - /home/vincent/nextcloud/config:/var/www/html/config
-      - "{{ share_root }}/files:/var/www/html/data"
+      - "{{ files_root }}:/var/www/html/data"
     ports:
       - 8084:443
 
