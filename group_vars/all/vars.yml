@@ -16,7 +16,6 @@ packages:
   - ncdu
   - rsync
   - syncthing
-  - zfsutils-linux
 
 services:
   - portainer
