@@ -31,6 +31,3 @@
       - samba
       - samba-client
     state: present
-
-- name: Create Samba user
-  shell: "printf '{{ password }}\n{{ password }}\n' | smbpasswd -a -s {{ username }}"

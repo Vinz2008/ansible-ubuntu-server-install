@@ -171,7 +171,7 @@ services:
     container_name: mariadb
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - mariadb_nextcloud_data:/var/lib/mysql
     environment:
       - "MYSQL_ROOT_PASSWORD={{ password }}"
       - MYSQL_DATABASE=nextcloud
@@ -221,8 +221,113 @@ services:
     volumes:
       - /home/vincent/duckdns/config:/config #optional
     restart: unless-stopped
+  
+  onlyoffice-documentserver:
+    image: onlyoffice/documentserver
+    container_name: onlyoffice-documentserver
+    depends_on:
+      - onlyoffice-postgresql
+      - onlyoffice-rabbitmq
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=onlyoffice-postgresql
+      - DB_PORT=5432
+      - DB_NAME=onlyoffice
+      - DB_USER=onlyoffice
+      - AMQP_URI=amqp://guest:guest@onlyoffice-rabbitmq
+      # Uncomment strings below to enable the JSON Web Token validation.
+      - JWT_ENABLED=true
+      - JWT_SECRET={{ password }}
+      - JWT_HEADER=Authorization
+      - JWT_IN_BODY=true
+    ports:
+      - '8086:80'
+    stdin_open: true
+    restart: unless-stopped
+    stop_grace_period: 60s
+    volumes:
+       - /home/vincent/onlyoffice/data:/var/www/onlyoffice/Data
+       - /home/vincent/onlyoffice/logs:/var/log/onlyoffice
+       - /home/vincent/onlyoffice/cache_files:/var/lib/onlyoffice/documentserver/App_Data/cache/files
+       - /home/vincent/onlyoffice/example_files:/var/www/onlyoffice/documentserver-example/public/files
+       - /home/vincent/onlyoffice/fonts:/usr/share/fonts
+       
+  onlyoffice-rabbitmq:
+    container_name: onlyoffice-rabbitmq
+    image: rabbitmq
+    restart: always
+    expose:
+      - '5672'
+
+  onlyoffice-postgresql:
+    container_name: onlyoffice-postgresql
+    image: postgres:9.5
+    environment:
+      - POSTGRES_DB=onlyoffice
+      - POSTGRES_USER=onlyoffice
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: always
+    expose:
+      - '5432'
+    volumes:
+      - postgresql_data:/var/lib/postgresql
+  photoprism:
+    container_name: photoprism
+    image: photoprism/photoprism:latest
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    depends_on:
+      - mariadb_photoprism
+    environment:
+      - PHOTOPRISM_ADMIN_USER=vincent
+      - PHOTOPRISM_ADMIN_PASSWORD={{ password }}
+      - PHOTOPRISM_AUTH_MODE=password
+      - PHOTOPRISM_ORIGINALS_LIMIT=5000
+      - PHOTOPRISM_HTTP_COMPRESSION=gzip
+      - PHOTOPRISM_LOG_LEVEL=info
+      - PHOTOPRISM_DISABLE_TENSORFLOW=false
+      - PHOTOPRISM_DISABLE_FACES=false
+      - PHOTOPRISM_DISABLE_CLASSIFICATION=false
+      - PHOTOPRISM_JPEG_QUALITY=85 
+      - PHOTOPRISM_DATABASE_SERVER=mariadb_photoprism:3306
+      - PHOTOPRISM_DATABASE_NAME=photoprism
+      - PHOTOPRISM_DATABASE_USER=photoprism
+      - PHOTOPRISM_DATABASE_PASSWORD={{ password }}
+      - PHOTOPRISM_SITE_CAPTION=AI-Powered Photos App
+      - PHOTOPRISM_SITE_DESCRIPTION=
+      - PHOTOPRISM_SITE_AUTHOR=
+    ports:
+      - "2342:2342"
+    working_dir: "/photoprism"
+    volumes:
+      # "/host/folder:/photoprism/folder"                # Example
+      - "{{ share_root }}/pictures:/photoprism/originals"               # Original media files (DO NOT REMOVE)
+      # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
+      # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
+      - "./home/vincent/photoprism/storage:/photoprism/storage"                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
+  mariadb_photoprism:
+    restart: unless-stopped
+    container_name: mariadb_photoprism
+    image: mariadb:latest
+    security_opt: # see https://github.com/MariaDB/mariadb-docker/issues/434#issuecomment-1136151239
+      - seccomp:unconfined
+      - apparmor:unconfined
+    command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+    volumes:
+      - mariadb_photoprism_data:/var/lib/mysql # DO NOT REMOVE
+    environment:
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_INITDB_SKIP_TZINFO=1
+      - MARIADB_DATABASE=photoprism
+      - MARIADB_USER=photoprism
+      - MARIADB_PASSWORD={{ password }}
+      - MARIADB_ROOT_PASSWORD={{ password }}
+        
 
 volumes:
   portainer_data:
-  mariadb_data:
+  mariadb_nextcloud_data:
+  mariadb_photoprism_data:
   nextcloud_data:
+  postgresql_data:
