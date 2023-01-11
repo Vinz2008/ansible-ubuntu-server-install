@@ -323,6 +323,14 @@ services:
       - MARIADB_USER=photoprism
       - MARIADB_PASSWORD={{ password }}
       - MARIADB_ROOT_PASSWORD={{ password }}
+  n8n:
+    restart: unless-stopped
+    container_name: n8n
+    image: n8nio/n8n
+    volumes:
+      - /home/vincent/n8n:/home/node/.n8n
+    ports:
+      - 5678:5678
         
 
 volumes:
