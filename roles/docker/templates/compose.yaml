@@ -167,31 +167,34 @@ services:
       - 8443:8443
   mariadb_nextcloud:
     image: "mariadb:latest"
-    restart: "on-failure"
+    restart: unless-stopped
+    container_name: mariadb
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
       - mariadb_data:/var/lib/mysql
     environment:
-      - "MARIADB_ROOT_PASSWORD={{ password }}"
+      - "MYSQL_ROOT_PASSWORD={{ password }}"
       - MYSQL_DATABASE=nextcloud
-      - "MARIADB_USER=nextcloud"
-      - "MARIADB_PASSWORD={{ password }}"
+      - MYSQL_USER=nextcloud
+      - "MYSQL_PASSWORD={{ password }}"
   nextcloud:
-    image: nextcloud
+    image: "nextcloud:latest"
     container_name: nextcloud
     restart: unless-stopped
+    ports:
+      - 8084:80
+      - 8085:443
     links:
-      - mariadb_nextcloud
+      - mariadb_nextcloud:mariadb
+    volumes:
+      - /home/vincent/nextcloud/config:/var/www/html/config
+      - nextcloud_data:/var/www/html
+      - "{{ files_root }}:/var/www/html/data"
     environment:
       - "MYSQL_PASSWORD={{ password }}"
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
-      - MYSQL_HOST=mariadb_nextcloud
-    volumes:
-      - /home/vincent/nextcloud/config:/var/www/html/config
-      - "{{ files_root }}:/var/www/html/data"
-    ports:
-      - 8084:443
+      - MYSQL_HOST=mariadb
 
 
   papermc:
@@ -222,3 +225,4 @@ services:
 volumes:
   portainer_data:
   mariadb_data:
+  nextcloud_data:
