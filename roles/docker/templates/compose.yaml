@@ -203,7 +203,7 @@ services:
     container_name: mcserver
     restart: unless-stopped
     environment:
-      - MEMORYSIZE=1G
+      - MEMORYSIZE=2G
     volumes:
       - /home/vincent/mcserver:/data:rw
     ports:
