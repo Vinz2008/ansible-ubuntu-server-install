@@ -31,6 +31,7 @@ services:
     volumes:
       - /home/vincent/homarr/configs:/app/data/configs
       - /home/vincent/homarr/icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock 
   jackett:
     image : linuxserver/jackett:latest
     container_name: jackett
@@ -202,7 +203,7 @@ services:
     container_name: mcserver
     restart: unless-stopped
     environment:
-      - MEMORYSIZE='1G'
+      - MEMORYSIZE=1G
     volumes:
       - /home/vincent/mcserver:/data:rw
     ports:
