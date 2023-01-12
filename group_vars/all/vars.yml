@@ -4,8 +4,8 @@ hostname: ansible-ubuntu
 
 docker_compose_dir: /opt/docker/compose
 
-share_root: /home/vincent
-files_root: /home/vincent/files
+share_root: /share
+files_root: /share/files
 
 packages:
   - htop
