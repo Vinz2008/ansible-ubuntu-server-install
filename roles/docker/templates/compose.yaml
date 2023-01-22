@@ -191,6 +191,7 @@ services:
       - /home/vincent/nextcloud/config:/var/www/html/config
       - nextcloud_data:/var/www/html
       - "{{ files_root }}:/var/www/html/data"
+      - "{{ share_root }}:/share_root"
     environment:
       - "MYSQL_PASSWORD={{ password }}"
       - MYSQL_DATABASE=nextcloud
