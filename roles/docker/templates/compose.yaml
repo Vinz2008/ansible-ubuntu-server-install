@@ -274,6 +274,7 @@ services:
     volumes:
       - postgresql_data:/var/lib/postgresql
   photoprism:
+    restart: unless-stopped
     container_name: photoprism
     image: photoprism/photoprism:latest
     security_opt:
