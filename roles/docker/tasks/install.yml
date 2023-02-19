@@ -68,3 +68,12 @@
   community.docker.docker_compose:
     project_src: "{{ docker_compose_dir }}"
 
+- name: Adding user to www-data group to fix permission for files folders
+  user: 
+    name: "{{ username }}"
+    groups: www-data
+    append: yes
+
+- name: Fix permission for files folders
+  command : chmod a=rwx -R {{ files_root }}
+
