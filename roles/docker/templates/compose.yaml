@@ -166,6 +166,17 @@ services:
       - /home/vincent/code-server/config:/config
     ports:
       - 8443:8443
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - /home/vincent/caddy/config:/config
+      - /home/vincent/caddy/data:/data
   mariadb_nextcloud:
     image: "mariadb:latest"
     restart: unless-stopped
