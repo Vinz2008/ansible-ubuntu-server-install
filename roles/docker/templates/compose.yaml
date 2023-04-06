@@ -166,6 +166,24 @@ services:
       - /home/vincent/code-server/config:/config
     ports:
       - 8443:8443
+  cloudflare-ddns:
+    image: oznu/cloudflare-ddns:latest
+    container_name: cloudflare
+    restart: unless-stopped
+    environment:
+      - API_KEY={{ cloudflare_token }}
+      - ZONE=vincent-nas.fr
+#      - SUBDOMAIN=subdomain
+      - PROXIED=false
+  cloudflare-ddns-jellyfin:
+    image: oznu/cloudflare-ddns:latest
+    container_name: cloudflare-jellyfin
+    restart: unless-stopped
+    environment:
+      - API_KEY={{ cloudflare_token }}
+      - ZONE=vincent-nas.fr
+      - SUBDOMAIN=jellyfin
+      - PROXIED=false
   caddy:
     image: caddy:latest
     container_name: caddy
@@ -177,6 +195,7 @@ services:
     volumes:
       - /home/vincent/caddy/config:/config
       - /home/vincent/caddy/data:/data
+      - /home/vincent/caddy/caddyfile/Caddyfile:/etc/caddy/Caddyfile
   mariadb_nextcloud:
     image: "mariadb:latest"
     restart: unless-stopped
