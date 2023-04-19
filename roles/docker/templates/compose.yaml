@@ -184,18 +184,29 @@ services:
       - ZONE=vincent-nas.fr
       - SUBDOMAIN=jellyfin
       - PROXIED=false
-  caddy:
-    image: caddy:latest
-    container_name: caddy
+#  caddy:
+#    image: caddy:latest
+#    container_name: caddy
+#    restart: unless-stopped
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#      - "443:443/udp"
+#    volumes:
+#      - /home/vincent/caddy/config:/config
+#      - /home/vincent/caddy/data:/data
+#      - /home/vincent/caddy/caddyfile/Caddyfile:/etc/caddy/Caddyfile
+  nginx_proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
+      - '80:80'
+      - '81:81'
+      - '443:443'
     volumes:
-      - /home/vincent/caddy/config:/config
-      - /home/vincent/caddy/data:/data
-      - /home/vincent/caddy/caddyfile/Caddyfile:/etc/caddy/Caddyfile
+      - /home/vincent/nginx-proxy/data:/data
+      - /home/vincent/nginx-proxy/letsencrypt:/etc/letsencrypt
+
   mariadb_nextcloud:
     image: "mariadb:latest"
     restart: unless-stopped
