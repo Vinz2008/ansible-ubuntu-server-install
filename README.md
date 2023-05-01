@@ -17,3 +17,9 @@ To index nextcloud files, run
 ```
 docker exec -u www-data nextcloud php occ files:scan --all
 ```
+
+Services to manually install to secondary server (for example a raspberry pi)
+
+- pihole
+- unbound
+- uptime kuma
