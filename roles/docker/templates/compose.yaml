@@ -134,6 +134,21 @@ services:
       - /home/vincent/prowlarr/config:/config
     ports:
       - 9696:9696
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - /home/vincent/readarr/config:/config
+      - "{{ share_root }}/books:/books" #optional
+      - "{{ share_root }}/downloads:/downloads"
+    ports: 
+      - 8787:8787
+
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
