@@ -212,6 +212,7 @@ services:
 #      - /home/vincent/caddy/data:/data
 #      - /home/vincent/caddy/caddyfile/Caddyfile:/etc/caddy/Caddyfile
   nginx_proxy:
+    container_name: nginx_proxy
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
     ports:
