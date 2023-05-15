@@ -190,15 +190,15 @@ services:
       - ZONE=vincent-nas.fr
 #      - SUBDOMAIN=subdomain
       - PROXIED=false
-  cloudflare-ddns-jellyfin:
-    image: oznu/cloudflare-ddns:latest
-    container_name: cloudflare-jellyfin
-    restart: unless-stopped
-    environment:
-      - API_KEY={{ cloudflare_token }}
-      - ZONE=vincent-nas.fr
-      - SUBDOMAIN=jellyfin
-      - PROXIED=false
+  #cloudflare-ddns-jellyfin:
+  #  image: oznu/cloudflare-ddns:latest
+  #  container_name: cloudflare-jellyfin
+  #  restart: unless-stopped
+  #  environment:
+  #    - API_KEY={{ cloudflare_token }}
+  #    - ZONE=vincent-nas.fr
+  #    - SUBDOMAIN=jellyfin
+  #    - PROXIED=false
 #  caddy:
 #    image: caddy:latest
 #    container_name: caddy
