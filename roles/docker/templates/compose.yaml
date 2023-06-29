@@ -235,6 +235,31 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - "MYSQL_PASSWORD={{ password }}"
+  gitea:
+    image: "gitea/gitea"
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: unless-stopped
+    volumes:
+      - /home/vincent/gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+  mirror-to-gitea:
+    image: jaedle/mirror-to-gitea:latest
+    restart: unless-stopped
+    environment:
+      - GITHUB_USERNAME=Vinz2008
+      - GITEA_URL=http://192.168.1.3:3000
+      - "GITEA_TOKEN={{gitea_token}}"
+      #- GITHUB_TOKEN=please-exchange-with-token # Optional, set to mirror private repos
+      #- MIRROR_PRIVATE_REPOSITORIES=true # Optional, set to mirror private repos
+      # - DELAY=3600 # Optional, set to change the delay between checks (in seconds)
+    container_name: mirror-to-gitea
   nextcloud:
     image: "nextcloud:latest"
     container_name: nextcloud
