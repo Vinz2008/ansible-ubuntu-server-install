@@ -102,6 +102,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Paris
+      - DOCKER_MODS=ghcr.io/gilbn/theme.park:sonarr
+      - TP_ADDON=sonarr-darker
     volumes:
       - /home/vincent/sonarr/config:/config
       - "{{ share_root }}/series:/tv" #optional
@@ -222,6 +224,9 @@ services:
     volumes:
       - /home/vincent/nginx-proxy/data:/data
       - /home/vincent/nginx-proxy/letsencrypt:/etc/letsencrypt
+      - /home/vincent/nginx-proxy/98-themepark:/etc/cont-init.d/98-themepark
+    environment:
+      - TP_THEME=organizr
 
   mariadb_nextcloud:
     image: "mariadb:latest"

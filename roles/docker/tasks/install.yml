@@ -17,6 +17,12 @@
       - python3-setuptools
     state: latest
 
+- name: Download theme file for nging-proxy-manager
+  get_url:
+    url: https://raw.githubusercontent.com/themepark-dev/theme.park/master/docker-mods/nginx-proxy-manager/root/etc/cont-init.d/98-themepark
+    dest: /home/vincent/nginx-proxy/98-themepark
+    mode: +x
+
 - name: Add Docker GPG apt Key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
