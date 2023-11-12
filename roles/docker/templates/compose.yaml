@@ -30,6 +30,7 @@ services:
       - '7575:7575'
     volumes:
       - /home/vincent/homarr/configs:/app/data/configs
+      - /home/vincent/homarr/data:/data
       - /home/vincent/homarr/icons:/app/public/icons
       - /var/run/docker.sock:/var/run/docker.sock 
   jackett:
