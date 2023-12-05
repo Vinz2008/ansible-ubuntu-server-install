@@ -278,7 +278,8 @@ services:
     volumes:
       - /home/vincent/nextcloud/config:/var/www/html/config
       - nextcloud_data:/var/www/html
-      - "{{ files_root }}:/var/www/html/data"
+#      - "{{ files_root }}:/var/www/html/data"
+      - /home/vincent/nextcloud/data:/var/www/html/data
       - "{{ share_root }}:/share_root"
     environment:
       - "MYSQL_PASSWORD={{ password }}"

@@ -79,7 +79,9 @@
     name: "{{ username }}"
     groups: www-data
     append: yes
+  when: false
 
 - name: Fix permission for files folders
   command : chmod a=rwx -R {{ files_root }}
+  when: false
 
