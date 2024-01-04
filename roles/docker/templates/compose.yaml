@@ -75,9 +75,15 @@ services:
       - TZ=Europe/Paris
     ports:
       - 5000:5000
-  ouroboros:
-    image: pyouroboros/ouroboros
-    container_name: ouroboros
+  # ouroboros:
+  #   image: pyouroboros/ouroboros
+  #   container_name: ouroboros
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -312,7 +318,7 @@ services:
     volumes:
       - /home/vincent/duckdns/config:/config #optional
     restart: unless-stopped
-  
+
   onlyoffice-documentserver:
     image: onlyoffice/documentserver
     container_name: onlyoffice-documentserver
@@ -423,7 +429,32 @@ services:
       - /home/vincent/n8n:/home/node/.n8n
     ports:
       - 5678:5678
-
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    ports:
+      - '19999:19999'
+    pid: host
+    #network_mode: host
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/dbus:/run/dbus:ro
 
 volumes:
   portainer_data:
@@ -431,3 +462,6 @@ volumes:
   mariadb_photoprism_data:
   nextcloud_data:
   postgresql_data:
+  netdataconfig:
+  netdatalib:
+  netdatacache:
