@@ -53,6 +53,51 @@ services:
     restart: unless-stopped
     ports:
       - 8191:8191
+#   suwayomi:
+#     container_name: suwayomi
+#     image: ghcr.io/suwayomi/tachidesk:latest
+#     environment:
+#       - PUID=1000
+#       - PGID=1000
+#       - TZ=Europe/Paris 
+#       - FLARESOLVERR_ENABLED=true
+#       - FLARESOLVERR_URL=http://192.168.1.3:8191
+# #    example for setting env vars:
+# #
+# #      - BIND_IP=0.0.0.0
+# #      - BIND_PORT=4567
+# #      - SOCKS_PROXY_ENABLED=false
+# #      - DOWNLOAD_AS_CBZ=true
+# #      - BASIC_AUTH_ENABLED=true
+# #      - BASIC_AUTH_USERNAME=manga
+# #      - BASIC_AUTH_PASSWORD=hello123
+#     volumes:
+#       - /home/vincent/Tachidesk/data:/home/suwayomi/.local/share/Tachidesk
+#     ports:
+#       - "4567:4567"
+#     restart: on-failure
+  teemii-frontend:
+    container_name: teemii-frontend
+    image: dokkaner/teemii-frontend:latest
+    ports:
+      - "8080:80"
+    networks:
+      - teemii-network
+    environment:
+      - VITE_APP_TITLE=Teemii
+      - VITE_APP_PORT=80
+
+  teemii-backend:
+    container_name: teemii-backend
+    image: dokkaner/teemii-backend:latest
+    volumes:
+      - /home/vincent/teemii/data:/data
+    networks:
+      - teemii-network
+    environment:
+      - EXPRESS_PORT=3000
+      - SOCKET_IO_PORT=1555
+
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
@@ -465,3 +510,7 @@ volumes:
   netdataconfig:
   netdatalib:
   netdatacache:
+
+networks:
+  teemii-network:
+    driver: bridge
