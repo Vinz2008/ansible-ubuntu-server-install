@@ -429,6 +429,21 @@ services:
       - /home/vincent/n8n:/home/node/.n8n
     ports:
       - 5678:5678
+  windows-vm:
+    image: dockurr/windows
+    container_name: windows
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    volumes:
+      - "{{ share_root }}/vm/windows:/storage"
+    stop_grace_period: 2m
+    restart: on-failure
   netdata:
     image: netdata/netdata
     container_name: netdata
