@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   portainer:
     image: portainer/portainer-ce:latest
@@ -120,12 +118,25 @@ services:
       - TZ=Europe/Paris
     ports:
       - 5000:5000
-  # ouroboros:
-  #   image: pyouroboros/ouroboros
-  #   container_name: ouroboros
-  #   restart: unless-stopped
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD= #optional
+      - CLI_ARGS= #optional
+    volumes:
+      - /home/vincent/calibre/config:/config
+      - "{{ share_root }}/books:/mnt/books"
+    ports:
+      - 8082:8080
+      - 8181:8181
+      - 8083:8081
+    restart: unless-stopped
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
@@ -489,6 +500,8 @@ services:
       - "{{ share_root }}/vm/windows:/storage"
     stop_grace_period: 2m
     restart: on-failure
+    profiles:
+      - donotstart
   netdata:
     image: netdata/netdata
     container_name: netdata

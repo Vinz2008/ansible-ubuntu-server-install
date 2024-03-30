@@ -39,6 +39,11 @@
     state: latest
     update_cache: true
 
+- name: Install docker-compose-plugin
+  apt:
+    name: docker-compose-plugin
+    state: latest
+
 - name: Install Docker Module for Python
   pip:
     name: 
@@ -71,7 +76,8 @@
     app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
 
 - name: Docker-compose up
-  community.docker.docker_compose:
+  #community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "{{ docker_compose_dir }}"
 
 - name: Adding user to www-data group to fix permission for files folders
