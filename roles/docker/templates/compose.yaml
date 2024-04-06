@@ -244,6 +244,7 @@ services:
       - SUDO_PASSWORD={{ password }}
     volumes:
       - /home/vincent/code-server/config:/config
+      - /home/vincent/code-server/projects:/projects
     ports:
       - 8443:8443
   cloudflare-ddns:
