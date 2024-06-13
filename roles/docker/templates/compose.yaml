@@ -512,6 +512,8 @@ services:
     #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
     volumes:
       - immich-model-cache:/cache
+    environment:
+      - MACHINE_LEARNING_PRELOAD__CLIP=XLM-Roberta-Large-Vit-B-32
     restart: always
 
   immich-redis:
