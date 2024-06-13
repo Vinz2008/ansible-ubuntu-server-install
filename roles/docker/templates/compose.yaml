@@ -425,59 +425,120 @@ services:
       - '5432'
     volumes:
       - postgresql_data:/var/lib/postgresql
-  photoprism:
-    restart: unless-stopped
-    container_name: photoprism
-    image: photoprism/photoprism:latest
-    security_opt:
-      - seccomp:unconfined
-      - apparmor:unconfined
-    depends_on:
-      - mariadb_photoprism
+  # photoprism:
+  #   restart: unless-stopped
+  #   container_name: photoprism
+  #   image: photoprism/photoprism:latest
+  #   security_opt:
+  #     - seccomp:unconfined
+  #     - apparmor:unconfined
+  #   depends_on:
+  #     - mariadb_photoprism
+  #   environment:
+  #     - PHOTOPRISM_ADMIN_USER=vincent
+  #     - PHOTOPRISM_ADMIN_PASSWORD={{ password }}
+  #     - PHOTOPRISM_AUTH_MODE=password
+  #     - PHOTOPRISM_ORIGINALS_LIMIT=5000
+  #     - PHOTOPRISM_HTTP_COMPRESSION=gzip
+  #     - PHOTOPRISM_LOG_LEVEL=info
+  #     - PHOTOPRISM_DISABLE_TENSORFLOW=false
+  #     - PHOTOPRISM_DISABLE_FACES=false
+  #     - PHOTOPRISM_DISABLE_CLASSIFICATION=false
+  #     - PHOTOPRISM_JPEG_QUALITY=85 
+  #     - PHOTOPRISM_DATABASE_SERVER=mariadb_photoprism:3306
+  #     - PHOTOPRISM_DATABASE_NAME=photoprism
+  #     - PHOTOPRISM_DATABASE_USER=photoprism
+  #     - PHOTOPRISM_DATABASE_PASSWORD={{ password }}
+  #     - PHOTOPRISM_SITE_CAPTION=AI-Powered Photos App
+  #     - PHOTOPRISM_SITE_DESCRIPTION=
+  #     - PHOTOPRISM_SITE_AUTHOR=
+  #   ports:
+  #     - "2342:2342"
+  #   working_dir: "/photoprism"
+  #   volumes:
+  #     # "/host/folder:/photoprism/folder"                # Example
+  #     - "{{ share_root }}/pictures:/photoprism/originals"               # Original media files (DO NOT REMOVE)
+  #     # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
+  #     # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
+  #     - "/home/vincent/photoprism/storage:/photoprism/storage"                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
+  # mariadb_photoprism:
+  #   restart: unless-stopped
+  #   container_name: mariadb_photoprism
+  #   image: mariadb:latest
+  #   security_opt: # see https://github.com/MariaDB/mariadb-docker/issues/434#issuecomment-1136151239
+  #     - seccomp:unconfined
+  #     - apparmor:unconfined
+  #   command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+  #   volumes:
+  #     - mariadb_photoprism_data:/var/lib/mysql # DO NOT REMOVE
+  #   environment:
+  #     - MARIADB_AUTO_UPGRADE=1
+  #     - MARIADB_INITDB_SKIP_TZINFO=1
+  #     - MARIADB_DATABASE=photoprism
+  #     - MARIADB_USER=photoprism
+  #     - MARIADB_PASSWORD={{ password }}
+  #     - MARIADB_ROOT_PASSWORD={{ password }}
+
+  immich-server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:release
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - /home/vincent/immich/not_used_upload_folder:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+      - "{{ share_root }}/pictures:/share_pictures"
     environment:
-      - PHOTOPRISM_ADMIN_USER=vincent
-      - PHOTOPRISM_ADMIN_PASSWORD={{ password }}
-      - PHOTOPRISM_AUTH_MODE=password
-      - PHOTOPRISM_ORIGINALS_LIMIT=5000
-      - PHOTOPRISM_HTTP_COMPRESSION=gzip
-      - PHOTOPRISM_LOG_LEVEL=info
-      - PHOTOPRISM_DISABLE_TENSORFLOW=false
-      - PHOTOPRISM_DISABLE_FACES=false
-      - PHOTOPRISM_DISABLE_CLASSIFICATION=false
-      - PHOTOPRISM_JPEG_QUALITY=85 
-      - PHOTOPRISM_DATABASE_SERVER=mariadb_photoprism:3306
-      - PHOTOPRISM_DATABASE_NAME=photoprism
-      - PHOTOPRISM_DATABASE_USER=photoprism
-      - PHOTOPRISM_DATABASE_PASSWORD={{ password }}
-      - PHOTOPRISM_SITE_CAPTION=AI-Powered Photos App
-      - PHOTOPRISM_SITE_DESCRIPTION=
-      - PHOTOPRISM_SITE_AUTHOR=
+      - TZ=Europe/Paris
+      - DB_PASSWORD=postgres
+      - DB_USERNAME=postgres
+      - DB_DATABASE_NAME=immich
+      - REDIS_HOSTNAME=immich-redis
+      - DB_HOSTNAME=immich-database
     ports:
-      - "2342:2342"
-    working_dir: "/photoprism"
+      - 2283:3001
+    depends_on:
+      - immich-redis
+      - immich-database
+    restart: always
+
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.
+    # Example tag: ${IMMICH_VERSION:-release}-cuda
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/ml-hardware-acceleration
+    #   file: hwaccel.ml.yml
+    #   service: cpu # set to one of [armnn, cuda, openvino, openvino-wsl] for accelerated inference - use the `-wsl` version for WSL2 where applicable
     volumes:
-      # "/host/folder:/photoprism/folder"                # Example
-      - "{{ share_root }}/pictures:/photoprism/originals"               # Original media files (DO NOT REMOVE)
-      # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
-      # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
-      - "/home/vincent/photoprism/storage:/photoprism/storage"                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
-  mariadb_photoprism:
-    restart: unless-stopped
-    container_name: mariadb_photoprism
-    image: mariadb:latest
-    security_opt: # see https://github.com/MariaDB/mariadb-docker/issues/434#issuecomment-1136151239
-      - seccomp:unconfined
-      - apparmor:unconfined
-    command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-    volumes:
-      - mariadb_photoprism_data:/var/lib/mysql # DO NOT REMOVE
+      - immich-model-cache:/cache
+    restart: always
+
+  immich-redis:
+    container_name: immich_redis
+    image: docker.io/redis:6.2-alpine@sha256:d6c2911ac51b289db208767581a5d154544f2b2fe4914ea5056443f62dc6e900
+    healthcheck:
+      test: redis-cli ping || exit 1
+    restart: always
+
+  immich-database:
+    container_name: immich_postgres
+    image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
     environment:
-      - MARIADB_AUTO_UPGRADE=1
-      - MARIADB_INITDB_SKIP_TZINFO=1
-      - MARIADB_DATABASE=photoprism
-      - MARIADB_USER=photoprism
-      - MARIADB_PASSWORD={{ password }}
-      - MARIADB_ROOT_PASSWORD={{ password }}
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: immich
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+    volumes:
+      - /home/vincent/immich/db:/var/lib/postgresql/data
+    # healthcheck:
+    #   test: pg_isready --dbname='immich' || exit 1; Chksum="$$(psql --dbname='immich' --username='postgres' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
+    #   interval: 5m
+    #   start_interval: 30s
+    #   start_period: 5m
+    command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
+    restart: always
+
   n8n:
     restart: unless-stopped
     container_name: n8n
@@ -533,12 +594,13 @@ services:
 volumes:
   portainer_data:
   mariadb_nextcloud_data:
-  mariadb_photoprism_data:
+#  mariadb_photoprism_data:
   nextcloud_data:
   postgresql_data:
   netdataconfig:
   netdatalib:
   netdatacache:
+  immich-model-cache:
 
 networks:
   teemii-network:
