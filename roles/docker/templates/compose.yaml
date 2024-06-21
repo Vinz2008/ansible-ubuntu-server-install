@@ -304,6 +304,11 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - "MYSQL_PASSWORD={{ password }}"
+  redis_nextcloud:
+    image: redis
+    restart: always
+    container_name: redis_nextcloud
+    command: "redis-server --requirepass {{ password }}"
   gitea:
     image: "gitea/gitea"
     container_name: gitea
@@ -338,6 +343,7 @@ services:
       - 8085:443
     links:
       - mariadb_nextcloud:mariadb
+      - redis_nextcloud:redis
     volumes:
       - /home/vincent/nextcloud/config:/var/www/html/config
       - nextcloud_data:/var/www/html
@@ -349,6 +355,8 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=mariadb
+      # - REDIS_HOST=redis
+      # - "REDIS_HOST_PASSWORD={{ password }}"
 
 
   papermc:
@@ -541,6 +549,15 @@ services:
     command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
     restart: always
 
+  crontab-ui:
+    restart: unless-stopped
+    container_name: crontab-ui
+    image: alseambusher/crontab-ui
+    ports:
+      - 8000:8000
+    volumes:
+      - /home/vincent/crontabs:/crontab-ui/crontabs/
+      - /var/spool/cron/crontabs:/etc/crontabs
   n8n:
     restart: unless-stopped
     container_name: n8n
