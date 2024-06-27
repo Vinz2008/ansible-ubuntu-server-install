@@ -74,27 +74,27 @@ services:
 #     ports:
 #       - "4567:4567"
 #     restart: on-failure
-  teemii-frontend:
-    container_name: teemii-frontend
-    image: dokkaner/teemii-frontend:latest
-    ports:
-      - "8080:80"
-    networks:
-      - teemii-network
-    environment:
-      - VITE_APP_TITLE=Teemii
-      - VITE_APP_PORT=80
+  # teemii-frontend:
+  #   container_name: teemii-frontend
+  #   image: dokkaner/teemii-frontend:latest
+  #   ports:
+  #     - "8080:80"
+  #   networks:
+  #     - teemii-network
+  #   environment:
+  #     - VITE_APP_TITLE=Teemii
+  #     - VITE_APP_PORT=80
 
-  teemii-backend:
-    container_name: teemii-backend
-    image: dokkaner/teemii-backend:latest
-    volumes:
-      - /home/vincent/teemii/data:/data
-    networks:
-      - teemii-network
-    environment:
-      - EXPRESS_PORT=3000
-      - SOCKET_IO_PORT=1555
+  # teemii-backend:
+  #   container_name: teemii-backend
+  #   image: dokkaner/teemii-backend:latest
+  #   volumes:
+  #     - /home/vincent/teemii/data:/data
+  #   networks:
+  #     - teemii-network
+  #   environment:
+  #     - EXPRESS_PORT=3000
+  #     - SOCKET_IO_PORT=1555
 
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
@@ -621,6 +621,6 @@ volumes:
   netdatacache:
   immich-model-cache:
 
-networks:
-  teemii-network:
-    driver: bridge
+# networks:
+#   teemii-network:
+#     driver: bridge
