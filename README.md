@@ -1,6 +1,11 @@
-Run command 
+Run command for homeserver
 ```
 ansible-playbook run.yml -K --ask-pass --ask-vault-pass
+```
+
+Run command  for rapsberry pi
+```
+ansible-playbook raspberry_pi.yml -K --ask-pass --ask-vault-pass
 ```
 
 For creating custom iso, run 

@@ -6,8 +6,8 @@
     group: root
     mode: 0644
 
-- meta: flush_handlers
+- ansible.builtin.meta: flush_handlers
 
 - name: Apply netplan config
-  command:
+  ansible.builtin.command:
     cmd: netplan apply

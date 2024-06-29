@@ -1,4 +1,4 @@
 ---
 - name: Apply netplan config
-  command:
+  ansible.builtin.command:
     cmd: netplan apply

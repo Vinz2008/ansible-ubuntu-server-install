@@ -1,11 +1,11 @@
 - name: Install aptitude
-  apt:
+  ansible.builtin.apt:
     name: aptitude
     state: latest
     update_cache: true
 
 - name: Install required packages
-  package:
+  ansible.builtin.package:
     name:
       - apt-transport-https
       - ca-certificates
@@ -18,46 +18,46 @@
     state: latest
 
 - name: Download theme file for nging-proxy-manager
-  get_url:
+  ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/themepark-dev/theme.park/master/docker-mods/nginx-proxy-manager/root/etc/cont-init.d/98-themepark
     dest: /home/vincent/nginx-proxy/98-themepark
     mode: +x
 
 - name: Add Docker GPG apt Key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
 - name: Add Docker Repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu focal stable
     state: present
 
 - name: Update apt and install docker-ce
-  apt:
+  ansible.builtin.apt:
     name: docker-ce
     state: latest
     update_cache: true
 
 - name: Install docker-compose-plugin
-  apt:
+  ansible.builtin.apt:
     name: docker-compose-plugin
     state: latest
 
 - name: Install Docker Module for Python
-  pip:
-    name: 
-    - docker
-    - docker-compose
+  ansible.builtin.pip:
+    name:
+      - docker
+      - docker-compose
 - name: Install latest passlib with pip
-  pip: 
+  ansible.builtin.pip:
     name: passlib
 
 - name: Adding user to docker group
-  user: 
+  ansible.builtin.user:
     name: "{{ username }}"
     groups: docker
-    append: yes
+    append: true
 
 - name: Make sure that the docker folders exists
   ansible.builtin.file:
@@ -69,25 +69,22 @@
     - "{{ docker_compose_dir }}"
 
 - name: Copy the compose file
-  template: 
+  ansible.builtin.template:
     src: templates/compose.yaml
     dest: "{{ docker_compose_dir }}/compose.yaml"
   vars:
     app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
 
 - name: Docker-compose up
-  #community.docker.docker_compose:
+  # community.docker.docker_compose:
   community.docker.docker_compose_v2:
     project_src: "{{ docker_compose_dir }}"
 
-- name: Adding user to www-data group to fix permission for files folders
-  user: 
-    name: "{{ username }}"
-    groups: www-data
-    append: yes
-  when: false
+# - name: Adding user to www-data group to fix permission for files folders
+#   ansible.builtin.user:
+#     name: "{{ username }}"
+#     groups: www-data
+#     append: true
 
-- name: Fix permission for files folders
-  command : chmod a=rwx -R {{ files_root }}
-  when: false
-
+# - name: Fix permission for files folders
+#   ansible.builtin.command : chmod a=rwx -R {{ files_root }}

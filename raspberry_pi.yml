@@ -1,0 +1,7 @@
+---
+- hosts: raspberry_pi
+  become: true
+  roles:
+    - name: raspberry_pi
+      tags:
+        - raspberry_pi

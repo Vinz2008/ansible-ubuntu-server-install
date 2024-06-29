@@ -1,1 +1,2 @@
-- include_tasks: install.yml
+- name: include install.yml for jellyfin
+  include_tasks: install.yml

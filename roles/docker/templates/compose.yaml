@@ -108,7 +108,7 @@ services:
     volumes:
       - /home/vincent/jellyseer/config:/app/config
   kavita:
-    image: kizaing/kavita:latest
+    image: jvmilazz0/kavita:latest
     container_name: kavita
     restart: unless-stopped
     volumes:
@@ -389,14 +389,14 @@ services:
     container_name: onlyoffice-documentserver
     depends_on:
       - onlyoffice-postgresql
-      - onlyoffice-rabbitmq
+#      - onlyoffice-rabbitmq
     environment:
       - DB_TYPE=postgres
       - DB_HOST=onlyoffice-postgresql
       - DB_PORT=5432
       - DB_NAME=onlyoffice
       - DB_USER=onlyoffice
-      - AMQP_URI=amqp://guest:guest@onlyoffice-rabbitmq
+#      - AMQP_URI=amqp://guest:guest@onlyoffice-rabbitmq
       # Uncomment strings below to enable the JSON Web Token validation.
       - JWT_ENABLED=true
       - JWT_SECRET={{ password }}
@@ -414,12 +414,12 @@ services:
        - /home/vincent/onlyoffice/example_files:/var/www/onlyoffice/documentserver-example/public/files
        - /home/vincent/onlyoffice/fonts:/usr/share/fonts
        
-  onlyoffice-rabbitmq:
-    container_name: onlyoffice-rabbitmq
-    image: rabbitmq
-    restart: always
-    expose:
-      - '5672'
+  # onlyoffice-rabbitmq:
+  #   container_name: onlyoffice-rabbitmq
+  #   image: rabbitmq
+  #   restart: always
+  #   expose:
+  #     - '5672'
 
   onlyoffice-postgresql:
     container_name: onlyoffice-postgresql
@@ -549,23 +549,23 @@ services:
     command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
     restart: always
 
-  crontab-ui:
-    restart: unless-stopped
-    container_name: crontab-ui
-    image: alseambusher/crontab-ui
-    ports:
-      - 8000:8000
-    volumes:
-      - /home/vincent/crontabs:/crontab-ui/crontabs/
-      - /var/spool/cron/crontabs:/etc/crontabs
-  n8n:
-    restart: unless-stopped
-    container_name: n8n
-    image: n8nio/n8n
-    volumes:
-      - /home/vincent/n8n:/home/node/.n8n
-    ports:
-      - 5678:5678
+  # crontab-ui:
+  #   restart: unless-stopped
+  #   container_name: crontab-ui
+  #   image: alseambusher/crontab-ui
+  #   ports:
+  #     - 8000:8000
+  #   volumes:
+  #     - /home/vincent/crontabs:/crontab-ui/crontabs/
+  #     - /var/spool/cron/crontabs:/etc/crontabs
+  # n8n:
+  #   restart: unless-stopped
+  #   container_name: n8n
+  #   image: n8nio/n8n
+  #   volumes:
+  #     - /home/vincent/n8n:/home/node/.n8n
+  #   ports:
+  #     - 5678:5678
   windows-vm:
     image: dockurr/windows
     container_name: windows

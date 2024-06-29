@@ -1,0 +1,64 @@
+- name: Install software to install custom repos
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - python3-pip
+      - python3-setuptools
+
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/raspbian/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/raspbian bookworm stable
+    state: present
+
+- name: Update apt and install docker-ce
+  ansible.builtin.apt:
+    name: docker-ce
+    state: latest
+    update_cache: true
+
+- name: Install docker-compose-plugin
+  ansible.builtin.apt:
+    name: 
+      - docker-compose-plugin
+      - docker-buildx-plugin
+      - python3-passlib
+    state: latest
+
+
+- name: Adding user to docker group
+  ansible.builtin.user:
+    name: pi
+    groups: docker
+    append: true
+
+
+- name: Make sure that the docker folders exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: pi
+    group: pi
+    state: directory
+  loop:
+    - "{{ docker_compose_dir }}"
+
+  
+- name: Copy the compose file
+  ansible.builtin.template:
+    src: templates/compose.yaml
+    dest: "{{ docker_compose_dir }}/compose.yaml"
+  vars:
+    app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
+
+- name: Docker-compose up
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_compose_dir }}"
