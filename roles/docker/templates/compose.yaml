@@ -549,6 +549,29 @@ services:
     command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
     restart: always
 
+  bitwarden-backup:
+    image: ghcr.io/quadrubo/bitwarden-backup:v0.1.0
+    container_name: bitwarden-backup
+    environment:
+      # Paths
+      - BACKUP_PATH=/backup
+      - BW_BINARY=/usr/local/bin/bw
+      # Authentication
+      - "BW_CLIENT_ID={{ bitwarden_client_id }}"
+      - "BW_CLIENT_SECRET={{ bitwarden_client_secret }}"
+      - "BW_MASTER_PASSWORD={{ bitwarden_master_password }}"
+      # Connection
+      - BW_SERVER=https://vault.bitwarden.com
+      # Backups
+      - BACKUP_FORMAT=encrypted_json
+      - "BACKUP_PASSWORD={{ bitwarden_master_password }}"
+      # Cron
+      - CRON_SCHEDULE=0 1 * * *
+      # Time
+      - TZ=Europe/Paris
+    volumes:
+      - "{{ share_root }}/files/vincent/backup/:/backup"
+
   # crontab-ui:
   #   restart: unless-stopped
   #   container_name: crontab-ui
