@@ -1,6 +1,6 @@
 Run command for homeserver
 ```
-ansible-playbook run.yml -K --ask-pass --ask-vault-pass
+ansible-playbook nas.yml -K --ask-pass --ask-vault-pass
 ```
 
 Run command  for rapsberry pi

@@ -17,31 +17,43 @@ services:
     ports:
       - 9001:9001
 
-  # pihole:
-  #   container_name: pihole
-  #   hostname: pihole
-  #   image: pihole/pihole:latest
-  #   ports:
-  #   - "53:53/tcp"
-  #   - "53:53/udp"
-  #   - "8080:80/tcp"
-  #   environment:
-  #   - 'TZ=Europe/Paris'
-  #   - 'WEBPASSWORD={{ password }}'
-  #   - 'DNS1=192.168.1.36#5053'
-  #   - 'DNS2=no'
-  #   volumes:
-  #   - '/home/pi/pihole/etc-pihole/:/etc/pihole/'
-  #   - '/home/pi/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
-  #   restart: unless-stopped
-  # unbound:
-  #   container_name: unbound
-  #   image: mvance/unbound-rpi:latest
-  #   volumes:
-  #   - /home/pi/unbound:/opt/unbound/etc/unbound
-  #   ports:
-  #   - "5053:5053/tcp"
-  #   - "5053:5053/udp"
-  #   healthcheck:
-  #     disable: true
-  #   restart: unless-stopped
+  pihole:
+    container_name: pihole
+    hostname: pihole
+    image: pihole/pihole:latest
+    # ports:
+    # - "53:53/tcp"
+    # - "53:53/udp"
+    # - "8080:80/tcp"
+    environment:
+    - 'TZ=Europe/Paris'
+    - 'WEBPASSWORD={{ password }}'
+    - 'DNS1=192.168.1.36#5053'
+    - 'DNS2=no'
+    volumes:
+    - '/home/pi/pihole/etc-pihole/:/etc/pihole/'
+    - '/home/pi/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    restart: unless-stopped
+    dns:
+      - "127.0.0.1"
+      - "1.1.1.1"
+    cap_add:
+      - NET_ADMIN
+    network_mode: host
+  unbound:
+    container_name: unbound
+    #image: mvance/unbound-rpi:latest
+#    image: mvance/unbound:latest
+    image: klutchell/unbound
+    volumes:
+     - /home/pi/unbound/config:/etc/unbound/custom.conf.d
+     - /home/pi/unbound/root-hints:/var/lib/unbound/root.hints
+     - /home/pi/unbound/unbound.log:/var/log/unbound/unbound.log
+#    - /home/pi/unbound/config:/opt/unbound/etc/unbound
+#    - /home/pi/unbound/root-hints:/opt/unbound/etc/unbound
+    ports:
+    - "5053:5053/tcp"
+    - "5053:5053/udp"
+    healthcheck:
+      disable: true
+    restart: unless-stopped

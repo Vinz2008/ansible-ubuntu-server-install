@@ -35,12 +35,40 @@
     state: latest
 
 
+
 - name: Adding user to docker group
   ansible.builtin.user:
     name: pi
     groups: docker
     append: true
 
+- name: Create the config folder for unbound
+  ansible.builtin.file:
+    path: /home/pi/unbound/config/
+    state: directory
+    owner: pi
+    group: pi
+    recurse: true
+
+- name: Copy the config
+  ansible.builtin.copy:
+    src: pi-hole.conf
+    dest: /home/pi/unbound/config/pi-hole.conf
+    force: true
+
+- name: Download root-hints for unbound
+  ansible.builtin.get_url:
+    url: https://www.internic.net/domain/named.root
+    dest: /home/pi/unbound/root-hints
+    group: pi
+    owner: pi
+
+- name: Create log file
+  ansible.builtin.file:
+    path: /home/pi/unbound/unbound.log
+    owner: pi
+    group: pi
+    state: touch
 
 - name: Make sure that the docker folders exists
   ansible.builtin.file:
@@ -51,7 +79,6 @@
   loop:
     - "{{ docker_compose_dir }}"
 
-  
 - name: Copy the compose file
   ansible.builtin.template:
     src: templates/compose.yaml
