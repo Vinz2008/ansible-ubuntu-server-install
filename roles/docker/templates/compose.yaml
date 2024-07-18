@@ -570,7 +570,7 @@ services:
       # Time
       - TZ=Europe/Paris
     volumes:
-      - "{{ share_root }}/files/vincent/backup/:/backup"
+      - "{{ share_root }}/files/vincent/backup/bitwarden/:/backup"
 
   # crontab-ui:
   #   restart: unless-stopped

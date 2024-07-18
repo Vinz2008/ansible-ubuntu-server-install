@@ -23,6 +23,11 @@ To index nextcloud files, run
 docker exec -u www-data nextcloud php occ files:scan --all
 ```
 
+To backup bitwarden manually, run
+```
+docker exec bitwarden-backup /usr/local/bin/python /app/main.py
+```
+
 Services to manually install to secondary server (for example a raspberry pi)
 
 - pihole
