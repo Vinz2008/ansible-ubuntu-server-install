@@ -23,6 +23,12 @@
     dest: /home/vincent/nginx-proxy/98-themepark
     mode: +x
 
+- name: Add the install script for the windows vm
+  ansible.builtin.copy:
+    src: oem/
+    dest: "{{ share_root }}/vm/install/windows/oem/"
+    force: true
+
 - name: Add Docker GPG apt Key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
