@@ -42,21 +42,20 @@ services:
     network_mode: host
   unbound:
     container_name: unbound
-    #image: mvance/unbound-rpi:latest
-#    image: mvance/unbound:latest
     image: klutchell/unbound
     volumes:
      - /home/pi/unbound/config:/etc/unbound/custom.conf.d
      - /home/pi/unbound/root-hints:/var/lib/unbound/root.hints
      - /home/pi/unbound/unbound.log:/var/log/unbound/unbound.log
-#    - /home/pi/unbound/config:/opt/unbound/etc/unbound
-#    - /home/pi/unbound/root-hints:/opt/unbound/etc/unbound
     ports:
     - "5053:5053/tcp"
     - "5053:5053/udp"
     healthcheck:
       disable: true
     restart: unless-stopped
+    logging:
+      options:
+        max-size: 50m
   home-assistant:
     container_name: home_assistant
     image: "ghcr.io/home-assistant/home-assistant:stable"

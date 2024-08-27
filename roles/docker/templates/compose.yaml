@@ -613,8 +613,8 @@ services:
       RAM_CHECK: "N"
       RAM_SIZE: "8G"
       CPU_CORES: "4"
-#    profiles:
-#      - donotstart
+    profiles:
+      - donotstart
 
   macos-vm:
     image: dockurr/macos
