@@ -664,6 +664,26 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /run/dbus:/run/dbus:ro
 
+
+  scrutiny:
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    container_name: scrutiny
+    cap_add:
+      - SYS_RAWIO
+    ports:
+      - "8087:8080" # webapp
+      - "8088:8086" # influxDB admin
+    volumes:
+      - /run/udev:/run/udev:ro
+      - /home/vincent/scrutiny/config:/opt/scrutiny/config
+      - /home/vincent/scrutiny/influxdb:/opt/scrutiny/influxdb
+    devices:
+    # disks of share
+      - "/dev/sdb"
+      - "/dev/sdc"
+      - "/dev/sdd"
+      - "/dev/sdf"
+
 volumes:
   portainer_data:
   mariadb_nextcloud_data:
