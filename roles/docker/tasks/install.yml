@@ -50,14 +50,14 @@
     name: docker-compose-plugin
     state: latest
 
-- name: Install Docker Module for Python
-  ansible.builtin.pip:
-    name:
-      - docker
-      - docker-compose
-- name: Install latest passlib with pip
-  ansible.builtin.pip:
-    name: passlib
+# - name: Install Docker Module for Python
+#   ansible.builtin.pip:
+#     name:
+#       - docker
+#       - docker-compose
+# - name: Install latest passlib with pip
+#   ansible.builtin.pip:
+#     name: passlib
 
 - name: Adding user to docker group
   ansible.builtin.user:
