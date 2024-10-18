@@ -504,7 +504,7 @@ services:
       - REDIS_HOSTNAME=immich-redis
       - DB_HOSTNAME=immich-database
     ports:
-      - 2283:3001
+      - 2283:2283
     depends_on:
       - immich-redis
       - immich-database
@@ -526,7 +526,7 @@ services:
 
   immich-redis:
     container_name: immich_redis
-    image: docker.io/redis:6.2-alpine@sha256:d6c2911ac51b289db208767581a5d154544f2b2fe4914ea5056443f62dc6e900
+    image: docker.io/redis:6.2-alpine@sha256:2ba50e1ac3a0ea17b736ce9db2b0a9f6f8b85d4c27d5f5accc6a416d8f42c6d5
     healthcheck:
       test: redis-cli ping || exit 1
     restart: always
