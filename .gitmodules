@@ -1,0 +1,3 @@
+[submodule "roles/docker/templates/pumpkin"]
+	path = roles/docker/templates/pumpkin
+	url = https://github.com/Snowiiii/Pumpkin

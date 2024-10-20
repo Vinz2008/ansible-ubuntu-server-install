@@ -668,6 +668,7 @@ services:
   scrutiny:
     image: ghcr.io/analogj/scrutiny:master-omnibus
     container_name: scrutiny
+    restart: unless-stopped
     cap_add:
       - SYS_RAWIO
     ports:
@@ -683,6 +684,15 @@ services:
       - "/dev/sdc"
       - "/dev/sdd"
       - "/dev/sdf"
+
+  pumpkin: # minecraft server, replace papermc with it in the future (TODO)
+    build: ./pumpkin
+    container_name: pumpkin
+    restart: unless-stopped
+    ports:
+      - "25566:25565"
+    volumes:
+      - /home/vincent/pumpkin/world:/pumpkin/world
 
 volumes:
   portainer_data:
