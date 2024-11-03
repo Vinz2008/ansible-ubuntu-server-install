@@ -323,6 +323,18 @@ services:
     ports:
       - "3000:3000"
       - "222:22"
+  gitea-runner:
+    image: gitea/act_runner:nightly
+    container_name: gitea-runner
+    environment:
+      - CONFIG_FILE=/config.yaml
+      - GITEA_INSTANCE_URL=http://192.168.1.3:3000
+      - "GITEA_RUNNER_REGISTRATION_TOKEN={{ gitea_runner_registration_token }}"
+      - "GITEA_RUNNER_NAME=runner-local"
+    volumes:
+      - /home/vincent/gitea-runner/config.yaml:/config.yaml
+      - /home/vincent/gitea-runner/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
   mirror-to-gitea:
     image: jaedle/mirror-to-gitea:latest
     restart: unless-stopped
