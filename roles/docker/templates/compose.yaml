@@ -118,25 +118,6 @@ services:
       - TZ=Europe/Paris
     ports:
       - 5000:5000
-  # calibre:
-  #   image: lscr.io/linuxserver/calibre:latest
-  #   container_name: calibre
-  #   security_opt:
-  #     - seccomp:unconfined #optional
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Etc/UTC
-  #     - PASSWORD= #optional
-  #     - CLI_ARGS= #optional
-  #   volumes:
-  #     - /home/vincent/calibre/config:/config
-  #     - "{{ share_root }}/books:/mnt/books"
-  #   ports:
-  #     - 8082:8080
-  #     - 8181:8181
-  #     - 8083:8081
-  #   restart: unless-stopped
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
@@ -445,59 +426,6 @@ services:
       - '5432'
     volumes:
       - postgresql_data:/var/lib/postgresql
-  # photoprism:
-  #   restart: unless-stopped
-  #   container_name: photoprism
-  #   image: photoprism/photoprism:latest
-  #   security_opt:
-  #     - seccomp:unconfined
-  #     - apparmor:unconfined
-  #   depends_on:
-  #     - mariadb_photoprism
-  #   environment:
-  #     - PHOTOPRISM_ADMIN_USER=vincent
-  #     - PHOTOPRISM_ADMIN_PASSWORD={{ password }}
-  #     - PHOTOPRISM_AUTH_MODE=password
-  #     - PHOTOPRISM_ORIGINALS_LIMIT=5000
-  #     - PHOTOPRISM_HTTP_COMPRESSION=gzip
-  #     - PHOTOPRISM_LOG_LEVEL=info
-  #     - PHOTOPRISM_DISABLE_TENSORFLOW=false
-  #     - PHOTOPRISM_DISABLE_FACES=false
-  #     - PHOTOPRISM_DISABLE_CLASSIFICATION=false
-  #     - PHOTOPRISM_JPEG_QUALITY=85 
-  #     - PHOTOPRISM_DATABASE_SERVER=mariadb_photoprism:3306
-  #     - PHOTOPRISM_DATABASE_NAME=photoprism
-  #     - PHOTOPRISM_DATABASE_USER=photoprism
-  #     - PHOTOPRISM_DATABASE_PASSWORD={{ password }}
-  #     - PHOTOPRISM_SITE_CAPTION=AI-Powered Photos App
-  #     - PHOTOPRISM_SITE_DESCRIPTION=
-  #     - PHOTOPRISM_SITE_AUTHOR=
-  #   ports:
-  #     - "2342:2342"
-  #   working_dir: "/photoprism"
-  #   volumes:
-  #     # "/host/folder:/photoprism/folder"                # Example
-  #     - "{{ share_root }}/pictures:/photoprism/originals"               # Original media files (DO NOT REMOVE)
-  #     # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
-  #     # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
-  #     - "/home/vincent/photoprism/storage:/photoprism/storage"                  # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
-  # mariadb_photoprism:
-  #   restart: unless-stopped
-  #   container_name: mariadb_photoprism
-  #   image: mariadb:latest
-  #   security_opt: # see https://github.com/MariaDB/mariadb-docker/issues/434#issuecomment-1136151239
-  #     - seccomp:unconfined
-  #     - apparmor:unconfined
-  #   command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-  #   volumes:
-  #     - mariadb_photoprism_data:/var/lib/mysql # DO NOT REMOVE
-  #   environment:
-  #     - MARIADB_AUTO_UPGRADE=1
-  #     - MARIADB_INITDB_SKIP_TZINFO=1
-  #     - MARIADB_DATABASE=photoprism
-  #     - MARIADB_USER=photoprism
-  #     - MARIADB_PASSWORD={{ password }}
-  #     - MARIADB_ROOT_PASSWORD={{ password }}
 
   immich-server:
     container_name: immich_server
@@ -583,24 +511,6 @@ services:
       - TZ=Europe/Paris
     volumes:
       - "{{ share_root }}/files/vincent/backup/bitwarden/:/backup"
-
-  # crontab-ui:
-  #   restart: unless-stopped
-  #   container_name: crontab-ui
-  #   image: alseambusher/crontab-ui
-  #   ports:
-  #     - 8000:8000
-  #   volumes:
-  #     - /home/vincent/crontabs:/crontab-ui/crontabs/
-  #     - /var/spool/cron/crontabs:/etc/crontabs
-  # n8n:
-  #   restart: unless-stopped
-  #   container_name: n8n
-  #   image: n8nio/n8n
-  #   volumes:
-  #     - /home/vincent/n8n:/home/node/.n8n
-  #   ports:
-  #     - 5678:5678
   windows-vm:
     image: dockurr/windows
     container_name: windows
@@ -709,7 +619,6 @@ services:
 volumes:
   portainer_data:
   mariadb_nextcloud_data:
-#  mariadb_photoprism_data:
   nextcloud_data:
   postgresql_data:
   netdataconfig:
