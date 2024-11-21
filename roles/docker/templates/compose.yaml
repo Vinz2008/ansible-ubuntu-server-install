@@ -194,6 +194,20 @@ services:
       - "{{ share_root }}/downloads:/downloads"
     ports: 
       - 8787:8787
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - /home/vincent/lidarr/config:/config
+      - "{{ share_root }}/musics:/music"
+      - "{{ share_root }}/downloads:/downloads"
+    ports:
+      - 8686:8686
 
   transmission:
     image: lscr.io/linuxserver/transmission:latest
