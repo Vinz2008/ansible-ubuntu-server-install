@@ -376,6 +376,7 @@ services:
       - /home/vincent/mcserver:/data:rw
     ports:
       - 25565:25565
+      - 25575:25575
 
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
