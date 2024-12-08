@@ -3,7 +3,7 @@ Run command for homeserver
 ansible-playbook nas.yml -K --ask-pass --ask-vault-pass
 ```
 
-Run command  for rapsberry pi
+Run command  for raspberry pi
 ```
 ansible-playbook raspberry_pi.yml -K --ask-pass --ask-vault-pass
 ```
