@@ -20,6 +20,8 @@ services:
     privileged: true
     volumes:
       - /:/mnt/host:ro
+    environment:
+      DASHDOT_ENABLE_CPU_TEMPS: 'true'
   homarr:
     image: ghcr.io/ajnart/homarr:latest
     container_name: homarr
