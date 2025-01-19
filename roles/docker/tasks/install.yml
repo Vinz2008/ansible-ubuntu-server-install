@@ -92,6 +92,7 @@
   community.docker.docker_compose_v2:
     build: "always"
     project_src: "{{ docker_compose_dir }}"
+#    profiles: donotstart
 
 # - name: Adding user to www-data group to fix permission for files folders
 #   ansible.builtin.user:
