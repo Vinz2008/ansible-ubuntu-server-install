@@ -23,7 +23,6 @@ services:
   - homarr
   - jackett
   - flaresolverr
-  - jellyseer
   - kavita
   - radarr
   - sonarr

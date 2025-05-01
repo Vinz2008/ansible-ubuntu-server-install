@@ -17,6 +17,12 @@
       - python3-setuptools
     state: latest
 
+
+- name: Set home folder for user
+  set_fact:
+    home_folder: "/home/{{ username }}"
+
+  
 - name: Download theme file for nging-proxy-manager
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/themepark-dev/theme.park/master/docker-mods/nginx-proxy-manager/root/etc/cont-init.d/98-themepark

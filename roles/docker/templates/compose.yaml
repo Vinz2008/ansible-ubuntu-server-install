@@ -29,9 +29,9 @@ services:
     ports:
       - '7575:7575'
     volumes:
-      - /home/vincent/homarr/configs:/app/data/configs
-      - /home/vincent/homarr/data:/data
-      - /home/vincent/homarr/icons:/app/public/icons
+      - "{{ home_folder }}/homarr/configs:/app/data/configs"
+      - "{{ home_folder }}/homarr/data:/data"
+      - "{{ home_folder }}/homarr/icons:/app/public/icons"
       - /var/run/docker.sock:/var/run/docker.sock 
   jackett:
     image : linuxserver/jackett:latest
@@ -43,7 +43,7 @@ services:
       - TZ=Europe/Paris
       - AUTO_UPDATE=true #optional
     volumes:
-      - /home/vincent/jackett/config:/config
+      - "{{ home_folder }}/jackett/config:/config"
       - "{{ share_root }}/downloads:/downloads"
     ports:
       - 9117:9117
@@ -72,7 +72,7 @@ services:
 # #      - BASIC_AUTH_USERNAME=manga
 # #      - BASIC_AUTH_PASSWORD=hello123
 #     volumes:
-#       - /home/vincent/Tachidesk/data:/home/suwayomi/.local/share/Tachidesk
+#       - {{ home_folder }}/Tachidesk/data:/home/suwayomi/.local/share/Tachidesk
 #     ports:
 #       - "4567:4567"
 #     restart: on-failure
@@ -91,31 +91,31 @@ services:
   #   container_name: teemii-backend
   #   image: dokkaner/teemii-backend:latest
   #   volumes:
-  #     - /home/vincent/teemii/data:/data
+  #     - {{ home_folder }}/teemii/data:/data
   #   networks:
   #     - teemii-network
   #   environment:
   #     - EXPRESS_PORT=3000
   #     - SOCKET_IO_PORT=1555
 
-  jellyseerr:
-    image: fallenbagel/jellyseerr:latest
-    container_name: jellyseerr
-    restart: unless-stopped
-    environment:
-      - LOG_LEVEL=debug
-      - TZ=Europe/Paris
-    ports:
-      - 5055:5055
-    volumes:
-      - /home/vincent/jellyseer/config:/app/config
+#   jellyseerr:
+#     image: fallenbagel/jellyseerr:latest
+#     container_name: jellyseerr
+#     restart: unless-stopped
+#     environment:
+#       - LOG_LEVEL=debug
+#       - TZ=Europe/Paris
+#     ports:
+#       - 5055:5055
+#     volumes:
+#       - {{ home_folder }}/jellyseer/config:/app/config
   kavita:
     image: jvmilazz0/kavita:latest
     container_name: kavita
     restart: unless-stopped
     volumes:
       - "{{ share_root }}/books:/books"
-      - /home/vincent/kavita/data:/kavita/config
+      - "{{ home_folder }}/kavita/data:/kavita/config"
     environment:
       - TZ=Europe/Paris
     ports:
@@ -135,7 +135,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - /home/vincent/radarr/config:/config
+      - "{{ home_folder }}/radarr/config:/config"
       - "{{ share_root }}/films:/movies" #optional
       - "{{ share_root }}/downloads:/downloads" #optional
     ports:
@@ -151,7 +151,7 @@ services:
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:sonarr
       - TP_ADDON=sonarr-darker
     volumes:
-      - /home/vincent/sonarr/config:/config
+      - "{{ home_folder }}/sonarr/config:/config"
       - "{{ share_root }}/series:/tv" #optional
       - "{{ share_root }}/downloads:/downloads" #optional
     ports:
@@ -165,7 +165,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - /home/vincent/bazarr/config:/config
+      - "{{ home_folder }}/bazarr/config:/config"
       - "{{ share_root }}/films:/movies" #optional
       - "{{ share_root }}/series:/tv" #optional
     ports:
@@ -179,7 +179,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - /home/vincent/prowlarr/config:/config
+      - "{{ home_folder }}/prowlarr/config:/config"
     ports:
       - 9696:9696
   readarr:
@@ -191,7 +191,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - /home/vincent/readarr/config:/config
+      - "{{ home_folder }}/readarr/config:/config"
       - "{{ share_root }}/books:/books" #optional
       - "{{ share_root }}/downloads:/downloads"
     ports: 
@@ -205,7 +205,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - /home/vincent/lidarr/config:/config
+      - "{{ home_folder }}/lidarr/config:/config"
       - "{{ share_root }}/musics:/music"
       - "{{ share_root }}/downloads:/downloads"
     ports:
@@ -222,9 +222,9 @@ services:
       - USER=transmission #optional
       - "PASS={{ password }}" #optional
     volumes:
-      - /home/vincent/transmission/config:/config
+      - "{{ home_folder }}/transmission/config:/config"
       - "{{ share_root }}/downloads:/downloads"
-      - /home/vincent/transmission/watch:/watch
+      - "{{ home_folder }}/transmission/watch:/watch"
     ports:
       - 9091:9091
       - 51413:51413
@@ -240,8 +240,8 @@ services:
       - PASSWORD={{ password }}
       - SUDO_PASSWORD={{ password }}
     volumes:
-      - /home/vincent/code-server/config:/config
-      - /home/vincent/code-server/projects:/projects
+      - "{{ home_folder }}/code-server/config:/config"
+      - "{{ home_folder }}/code-server/projects:/projects"
     ports:
       - 8443:8443
   
@@ -255,7 +255,7 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - /home/vincent/cloudflare-ddns/config.json:/config.json
+      - "{{ home_folder }}/cloudflare-ddns/config.json:/config.json"
     restart: unless-stopped
 #   cloudflare-ddns:
 #     image: oznu/cloudflare-ddns:latest
@@ -284,9 +284,9 @@ services:
 #      - "443:443"
 #      - "443:443/udp"
 #    volumes:
-#      - /home/vincent/caddy/config:/config
-#      - /home/vincent/caddy/data:/data
-#      - /home/vincent/caddy/caddyfile/Caddyfile:/etc/caddy/Caddyfile
+#      - {{ home_folder }}/caddy/config:/config
+#      - {{ home_folder }}/caddy/data:/data
+#      - {{ home_folder }}/caddy/caddyfile/Caddyfile:/etc/caddy/Caddyfile
   nginx_proxy:
     container_name: nginx_proxy
     image: 'jc21/nginx-proxy-manager:latest'
@@ -296,9 +296,9 @@ services:
       - '81:81'
       - '443:443'
     volumes:
-      - /home/vincent/nginx-proxy/data:/data
-      - /home/vincent/nginx-proxy/letsencrypt:/etc/letsencrypt
-      - /home/vincent/nginx-proxy/98-themepark:/etc/cont-init.d/98-themepark
+      - "{{ home_folder }}/nginx-proxy/data:/data"
+      - "{{ home_folder }}/nginx-proxy/letsencrypt:/etc/letsencrypt"
+      - "{{ home_folder }}/nginx-proxy/98-themepark:/etc/cont-init.d/98-themepark"
     environment:
       - TP_THEME=organizr
 
@@ -342,8 +342,8 @@ services:
       - "GITEA_RUNNER_REGISTRATION_TOKEN={{ gitea_runner_registration_token }}"
       - "GITEA_RUNNER_NAME=runner-local"
     volumes:
-      - /home/vincent/gitea-runner/config.yaml:/config.yaml
-      - /home/vincent/gitea-runner/data:/data
+      - "{{ home_folder }}/gitea-runner/config.yaml:/config.yaml"
+      - "{{ home_folder }}/gitea-runner/data:/data"
       - /var/run/docker.sock:/var/run/docker.sock
   mirror-to-gitea:
     image: jaedle/mirror-to-gitea:latest
@@ -367,10 +367,10 @@ services:
       - mariadb_nextcloud:mariadb
       - redis_nextcloud:redis
     volumes:
-      - /home/vincent/nextcloud/config:/var/www/html/config
+      - "{{ home_folder }}/nextcloud/config:/var/www/html/config"
       - nextcloud_data:/var/www/html
 #      - "{{ files_root }}:/var/www/html/data"
-      - /home/vincent/nextcloud/data:/var/www/html/data
+      - "{{ home_folder }}/nextcloud/data:/var/www/html/data"
       - "{{ share_root }}:/share_root"
     environment:
       - "MYSQL_PASSWORD={{ password }}"
@@ -388,7 +388,7 @@ services:
     environment:
       - MEMORYSIZE=2G
     volumes:
-      - /home/vincent/mcserver:/data:rw
+      - "{{ home_folder }}/mcserver:/data:rw"
     ports:
       - 25565:25565
       - 25575:25575
@@ -404,7 +404,7 @@ services:
       - TOKEN={{ duckdns_token }}
       - LOG_FILE=false #optional
     volumes:
-      - /home/vincent/duckdns/config:/config #optional
+      - "{{ home_folder }}/duckdns/config:/config" #optional
     restart: unless-stopped
 
   onlyoffice-documentserver:
@@ -431,11 +431,11 @@ services:
     restart: unless-stopped
     stop_grace_period: 60s
     volumes:
-       - /home/vincent/onlyoffice/data:/var/www/onlyoffice/Data
-       - /home/vincent/onlyoffice/logs:/var/log/onlyoffice
-       - /home/vincent/onlyoffice/cache_files:/var/lib/onlyoffice/documentserver/App_Data/cache/files
-       - /home/vincent/onlyoffice/example_files:/var/www/onlyoffice/documentserver-example/public/files
-       - /home/vincent/onlyoffice/fonts:/usr/share/fonts
+       - "{{ home_folder }}/onlyoffice/data:/var/www/onlyoffice/Data"
+       - "{{ home_folder }}/onlyoffice/logs:/var/log/onlyoffice"
+       - "{{ home_folder }}/onlyoffice/cache_files:/var/lib/onlyoffice/documentserver/App_Data/cache/files"
+       - "{{ home_folder }}/onlyoffice/example_files:/var/www/onlyoffice/documentserver-example/public/files"
+       - "{{ home_folder }}/onlyoffice/fonts:/usr/share/fonts"
        
   # onlyoffice-rabbitmq:
   #   container_name: onlyoffice-rabbitmq
@@ -463,7 +463,7 @@ services:
     devices:
       - /dev/dri:/dev/dri
     volumes:
-      - /home/vincent/immich/not_used_upload_folder:/usr/src/app/upload
+      - "{{ home_folder }}/immich/not_used_upload_folder:/usr/src/app/upload"
       - /etc/localtime:/etc/localtime:ro
       - "{{ share_root }}/pictures:/share_pictures"
     environment:
@@ -510,7 +510,7 @@ services:
       POSTGRES_DB: immich
       POSTGRES_INITDB_ARGS: '--data-checksums'
     volumes:
-      - /home/vincent/immich/db:/var/lib/postgresql/data
+      - "{{ home_folder }}/immich/db:/var/lib/postgresql/data"
     # healthcheck:
     #   test: pg_isready --dbname='immich' || exit 1; Chksum="$$(psql --dbname='immich' --username='postgres' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
     #   interval: 5m
@@ -628,8 +628,8 @@ services:
       - "8088:8086" # influxDB admin
     volumes:
       - /run/udev:/run/udev:ro
-      - /home/vincent/scrutiny/config:/opt/scrutiny/config
-      - /home/vincent/scrutiny/influxdb:/opt/scrutiny/influxdb
+      - "{{ home_folder }}/scrutiny/config:/opt/scrutiny/config"
+      - "{{ home_folder }}/scrutiny/influxdb:/opt/scrutiny/influxdb"
     devices:
     # disks of share
       - "/dev/sdb"
@@ -644,13 +644,43 @@ services:
     ports:
       - "25566:25565"
     volumes:
-      - /home/vincent/pumpkin/world:/pumpkin/world
+      - "{{ home_folder }}/pumpkin/world:/pumpkin/world"
+
+
+  koel:
+    image: phanan/koel
+    depends_on:
+      - koel-postgres
+    ports:
+      - 7063:80
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=koel-postgres
+      - DB_PORT=5432
+      - DB_USERNAME=koel
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=koel
+    volumes:
+      - "{{ share_root }}/musics:/music"
+      - "{{ home_folder }}/koel/covers:/var/www/html/public/img/covers"
+      - "{{ home_folder }}/koel/search_index:/var/www/html/storage/search-indexes"
+
+  koel-postgres:
+    image: postgres:13
+    volumes:
+      - koel_postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=koel
+      - POSTGRES_USER=koel
+      - POSTGRES_PASSWORD=postgres
+
 
 volumes:
   portainer_data:
   mariadb_nextcloud_data:
   nextcloud_data:
   postgresql_data:
+  koel_postgres_data:
   netdataconfig:
   netdatalib:
   netdatacache:

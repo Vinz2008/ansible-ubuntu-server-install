@@ -28,8 +28,3 @@ To backup bitwarden manually, run
 docker exec bitwarden-backup /usr/local/bin/python /app/main.py
 ```
 
-Services to manually install to secondary server (for example a raspberry pi)
-
-- pihole
-- unbound
-- uptime kuma
