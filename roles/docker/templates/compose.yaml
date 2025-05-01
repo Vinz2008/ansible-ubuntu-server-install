@@ -646,6 +646,16 @@ services:
     volumes:
       - "{{ home_folder }}/pumpkin/world:/pumpkin/world"
 
+  polaris:
+    image: registry.gitlab.com/connectical/container/polaris
+    container_name: polaris
+    restart: unless-stopped
+    ports:
+      - "5050:5050"
+    volumes:
+      - "{{ share_root }}/musics:/music"
+      - "{{ home_folder }}/polaris/cache:/var/cache/polaris"
+      - "{{ home_folder }}/polaris/data:/var/lib/polaris"
 
 
 volumes:
