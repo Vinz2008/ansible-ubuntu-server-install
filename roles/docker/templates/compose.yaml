@@ -647,40 +647,12 @@ services:
       - "{{ home_folder }}/pumpkin/world:/pumpkin/world"
 
 
-  koel:
-    image: phanan/koel
-    depends_on:
-      - koel-postgres
-    ports:
-      - 7063:80
-    environment:
-      - DB_CONNECTION=pgsql
-      - DB_HOST=koel-postgres
-      - DB_PORT=5432
-      - DB_USERNAME=koel
-      - DB_PASSWORD=postgres
-      - DB_DATABASE=koel
-    volumes:
-      - "{{ share_root }}/musics:/music"
-      - "{{ home_folder }}/koel/covers:/var/www/html/public/img/covers"
-      - "{{ home_folder }}/koel/search_index:/var/www/html/storage/search-indexes"
-
-  koel-postgres:
-    image: postgres:13
-    volumes:
-      - koel_postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=koel
-      - POSTGRES_USER=koel
-      - POSTGRES_PASSWORD=postgres
-
 
 volumes:
   portainer_data:
   mariadb_nextcloud_data:
   nextcloud_data:
   postgresql_data:
-  koel_postgres_data:
   netdataconfig:
   netdatalib:
   netdatacache:
