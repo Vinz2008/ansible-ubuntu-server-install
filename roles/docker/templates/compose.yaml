@@ -244,15 +244,28 @@ services:
       - /home/vincent/code-server/projects:/projects
     ports:
       - 8443:8443
+  
   cloudflare-ddns:
-    image: oznu/cloudflare-ddns:latest
-    container_name: cloudflare
-    restart: unless-stopped
+    image: timothyjmiller/cloudflare-ddns:latest
+    container_name: cloudflare-ddns
+    security_opt:
+      - no-new-privileges:true
+    network_mode: 'host'
     environment:
-      - API_KEY={{ cloudflare_token }}
-      - ZONE=vincent-nas.fr
-#      - SUBDOMAIN=subdomain
-      - PROXIED=false
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /home/vincent/cloudflare-ddns/config.json:/config.json
+    restart: unless-stopped
+#   cloudflare-ddns:
+#     image: oznu/cloudflare-ddns:latest
+#     container_name: cloudflare
+#     restart: unless-stopped
+#     environment:
+#       - API_KEY={{ cloudflare_token }}
+#       - ZONE=vincent-nas.fr
+# #      - SUBDOMAIN=subdomain
+#       - PROXIED=false
   #cloudflare-ddns-jellyfin:
   #  image: oznu/cloudflare-ddns:latest
   #  container_name: cloudflare-jellyfin
@@ -625,7 +638,7 @@ services:
       - "/dev/sdf"
 
   pumpkin: # minecraft server, replace papermc with it in the future (TODO)
-    build: ./pumpkin
+    image: ghcr.io/pumpkin-mc/pumpkin:master
     container_name: pumpkin
     restart: unless-stopped
     ports:

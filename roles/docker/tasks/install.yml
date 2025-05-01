@@ -73,19 +73,26 @@
     state: directory
   loop:
     - "{{ docker_compose_dir }}"
+    - /home/vincent/cloudflare-ddns
 
 - name: Copy the compose file
   ansible.builtin.template:
     src: templates/compose.yaml
     dest: "{{ docker_compose_dir }}/compose.yaml"
-  vars:
-    app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
+#  vars:
+#    app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
 
-- name: Copy the pumpkin folder
-  ansible.posix.synchronize:
-    src: templates/pumpkin
-    dest: "{{ docker_compose_dir }}/"
-    recursive: true
+
+- name: Copy the cloudflare ddns config file
+  ansible.builtin.template:
+    src: templates/config.json
+    dest: /home/vincent/cloudflare-ddns/config.json
+
+# - name: Copy the pumpkin folder
+#   ansible.posix.synchronize:
+#     src: templates/pumpkin
+#     dest: "{{ docker_compose_dir }}/"
+#     recursive: true
 
 - name: Docker-compose up
   # community.docker.docker_compose:
