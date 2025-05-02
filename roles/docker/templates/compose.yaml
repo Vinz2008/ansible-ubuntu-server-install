@@ -214,24 +214,6 @@ services:
     environment:
       - TP_THEME=organizr
 
-  mariadb_nextcloud:
-    image: "mariadb:latest"
-    restart: unless-stopped
-    container_name: mariadb
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    volumes:
-      - mariadb_nextcloud_data:/var/lib/mysql
-    environment:
-      - "MYSQL_ROOT_PASSWORD={{ password }}"
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - "MYSQL_PASSWORD={{ password }}"
-  redis_nextcloud:
-    image: redis
-    restart: always
-    container_name: redis_nextcloud
-    command: "redis-server --requirepass {{ password }}"
-
   gitea:
     image: "gitea/gitea"
     container_name: gitea
@@ -291,9 +273,23 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_HOST=mariadb
-      # - REDIS_HOST=redis
-      # - "REDIS_HOST_PASSWORD={{ password }}"
-
+      - REDIS_HOST=redis
+  mariadb_nextcloud:
+    image: "mariadb:latest"
+    restart: unless-stopped
+    container_name: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - mariadb_nextcloud_data:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD={{ password }}"
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - "MYSQL_PASSWORD={{ password }}"
+  redis_nextcloud:
+    image: redis
+    restart: always
+    container_name: redis_nextcloud
 
   papermc:
     image: marctv/minecraft-papermc-server:latest
