@@ -109,17 +109,19 @@ services:
 #       - 5055:5055
 #     volumes:
 #       - {{ home_folder }}/jellyseer/config:/app/config
-  kavita:
-    image: jvmilazz0/kavita:latest
-    container_name: kavita
-    restart: unless-stopped
-    volumes:
-      - "{{ share_root }}/books:/books"
-      - "{{ home_folder }}/kavita/data:/kavita/config"
-    environment:
-      - TZ=Europe/Paris
-    ports:
-      - 5000:5000
+
+  # kavita:
+  #   image: jvmilazz0/kavita:latest
+  #   container_name: kavita
+  #   restart: unless-stopped
+  #   volumes:
+  #     - "{{ share_root }}/books:/books"
+  #     - "{{ home_folder }}/kavita/data:/kavita/config"
+  #   environment:
+  #     - TZ=Europe/Paris
+  #   ports:
+  #     - 5000:5000
+
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
@@ -636,6 +638,41 @@ services:
       - "/dev/sdc"
       - "/dev/sdd"
       - "/dev/sdf"
+
+
+  microbin:
+    image: danielszabo99/microbin:latest
+    container_name: microbin
+    restart: unless-stopped
+    ports:
+     - 8089:8080
+    volumes:
+     - "{{ home_folder }}/microbin/data:/app/microbin_data"
+    environment:
+      - MICROBIN_ADMIN_USERNAME=admin
+      - "MICROBIN_ADMIN_PASSWORD={{ password }}"
+      - MICROBIN_EDITABLE=true
+      - MICROBIN_FOOTER_TEXT=
+      - MICROBIN_HIGHLIGHTSYNTAX=true
+      - MICROBIN_PRIVATE=true
+      - MICROBIN_PUBLIC_PATH=https://microbin.vincent-nas.fr/
+      - MICROBIN_READONLY=true
+      - "MICROBIN_UPLOADER_PASSWORD={{ password }}"
+      - MICROBIN_SHOW_READ_STATS=true
+      - MICROBIN_TITLE=
+      - MICROBIN_THREADS=2
+      - MICROBIN_GC_DAYS=0
+      - MICROBIN_ENABLE_BURN_AFTER=true
+      - MICROBIN_DEFAULT_BURN_AFTER=0
+      - MICROBIN_QR=true
+      - MICROBIN_ETERNAL_PASTA=true
+      - MICROBIN_ENABLE_READONLY=true
+      - MICROBIN_DEFAULT_EXPIRY=never
+      # - MICROBIN_HASH_IDS=true
+      # - MICROBIN_ENCRYPTION_CLIENT_SIDE=true
+      - MICROBIN_ENCRYPTION_SERVER_SIDE=true
+      - MICROBIN_MAX_FILE_SIZE_ENCRYPTED_MB=256
+      - MICROBIN_MAX_FILE_SIZE_UNENCRYPTED_MB=2048
 
   pumpkin: # minecraft server, replace papermc with it in the future (TODO)
     image: ghcr.io/pumpkin-mc/pumpkin:master
