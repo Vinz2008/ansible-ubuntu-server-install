@@ -400,7 +400,7 @@ services:
     volumes:
       - immich-model-cache:/cache
     environment:
-      - MACHINE_LEARNING_PRELOAD__CLIP=XLM-Roberta-Large-Vit-B-32
+      - MACHINE_LEARNING_PRELOAD__CLIP=nllb-clip-base-siglip__mrl
     restart: always
   immich-redis:
     container_name: immich_redis
