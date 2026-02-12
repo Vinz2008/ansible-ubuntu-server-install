@@ -450,6 +450,20 @@ services:
       - TZ=Europe/Paris
     volumes:
       - "{{ share_root }}/files/vincent/backup/bitwarden/:/backup"
+
+  teamspeak:
+    image: teamspeaksystems/teamspeak6-server:latest
+    container_name: teamspeak-server
+    restart: unless-stopped
+    ports:
+      - "9987:9987/udp"   # Voice Port
+      - "30033:30033/tcp" # File Transfer
+      # - "10080:10080/tcp" # Web Query
+    environment:
+      - TSSERVER_LICENSE_ACCEPTED=accept
+    volumes:
+      - "{{ home_folder }}/teamspeak:/var/tsserver"
+
   windows-vm:
     image: dockurr/windows
     container_name: windows
