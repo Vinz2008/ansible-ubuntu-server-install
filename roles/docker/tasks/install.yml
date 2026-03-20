@@ -89,10 +89,10 @@
 #    app_base: "{{ (networks | selectattr('name', '==', 'app') | map(attribute='base') | first) | default('') }}"
 
 
-- name: Copy the cloudflare ddns config file
-  ansible.builtin.template:
-    src: templates/config.json
-    dest: /home/vincent/cloudflare-ddns/config.json
+# - name: Copy the cloudflare ddns config file
+#   ansible.builtin.template:
+#     src: templates/config.json
+#     dest: /home/vincent/cloudflare-ddns/config.json
 
 # - name: Copy the pumpkin folder
 #   ansible.posix.synchronize:
