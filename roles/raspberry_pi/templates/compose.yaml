@@ -15,7 +15,7 @@ services:
     ports:
       - 3001:3001
   portainer_agent:
-    image: portainer/agent:2.19.5
+    image: portainer/agent:lts
     container_name: portainer_agent
     restart: unless-stopped
     volumes:
