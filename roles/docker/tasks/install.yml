@@ -19,7 +19,7 @@
 
 
 - name: Set home folder for user
-  set_fact:
+  ansible.builtin.set_fact:
     home_folder: "/home/{{ username }}"
 
   

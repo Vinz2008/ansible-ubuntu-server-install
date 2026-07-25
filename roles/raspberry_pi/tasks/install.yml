@@ -1,6 +1,6 @@
 - name: Install software to install custom repos
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
     name:
       - apt-transport-https
       - ca-certificates
@@ -28,13 +28,11 @@
 
 - name: Install docker-compose-plugin
   ansible.builtin.apt:
-    name: 
+    name:
       - docker-compose-plugin
       - docker-buildx-plugin
       - python3-passlib
     state: latest
-
-
 
 - name: Adding user to docker group
   ansible.builtin.user:

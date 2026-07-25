@@ -8,12 +8,12 @@
 - name: Check if reboot required
   ansible.builtin.stat:
     path: /var/run/reboot-required
-  register: reboot_required_file
+  register: system_reboot_required_file
 
 - name: Reboot if required
   ansible.builtin.reboot:
     msg: Rebooting due to a kernel update
-  when: reboot_required_file.stat.exists
+  when: system_reboot_required_file.stat.exists
 
 - name: Install essential packages
   ansible.builtin.package:

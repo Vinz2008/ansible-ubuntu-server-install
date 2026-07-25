@@ -1,2 +1,3 @@
 ---
-- ansible.builtin.include_tasks: essential.yml
+- name: Include essential.yml
+  ansible.builtin.include_tasks: essential.yml

@@ -5,7 +5,8 @@
     dest: /etc/netplan/00-ansible.yaml
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Apply netplan config
 
-- ansible.builtin.meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

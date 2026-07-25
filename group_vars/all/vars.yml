@@ -40,8 +40,8 @@ keyboard_layout: fr
 
 # for iso creating
 
-Iso:
-  Workingdir: "{{ lookup('env','HOME') }}/ubuntu-iso-generating-temp"
+iso:
+  Workingdir: "{{ lookup('env', 'HOME') }}/ubuntu-iso-generating-temp"
   UbuntuISO: focal-live-server-amd64.iso                # Ubuntu ISO filename
   UbuntuISO_URL: https://cdimage.ubuntu.com/ubuntu-server/focal/daily-live/current/   # Ubuntu ISO URL
   Name: ubuntu-nas

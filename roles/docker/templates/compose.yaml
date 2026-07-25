@@ -634,7 +634,7 @@ services:
       - POSTGRES_USER=airtrail
       - "POSTGRES_PASSWORD={{ password }}"
     volumes:
-      - "{{ share_root }}/airtrail/db_data:/var/lib/postgresql/data"
+      - "{{ home_folder }}/airtrail/db_data:/var/lib/postgresql/data"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airtrail -d airtrail"]
       interval: 5s

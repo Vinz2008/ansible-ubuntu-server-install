@@ -2,9 +2,9 @@ network:
   ethernets:
     enp1s0:
       addresses:
-      - {{ Iso.Config.OS.IPv4Address }}/24
-      gateway4: {{ Iso.Config.OS.IPv4Gateway }}
+      - {{ iso.Config.OS.IPv4Address }}/24
+      gateway4: {{ iso.Config.OS.IPv4Gateway }}
       nameservers:
         addresses:
-        - {{ Iso.Config.OS.IPv4DNS }}
+        - {{ iso.Config.OS.IPv4DNS }}
   version: 2
