@@ -396,13 +396,21 @@ services:
       - immich-redis
       - immich-database
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
+
   immich-machine-learning:
     container_name: immich_machine_learning
     image: ghcr.io/immich-app/immich-machine-learning:release
     volumes:
       - immich-model-cache:/cache
     environment:
-      - MACHINE_LEARNING_PRELOAD__CLIP=nllb-clip-base-siglip__mrl
+      - MACHINE_LEARNING_PRELOAD__CLIP__TEXTUAL=ViT-SO400M-16-SigLIP2-256__webli
+      - MACHINE_LEARNING_PRELOAD__CLIP__VISUAL=ViT-SO400M-16-SigLIP2-256__webli
+      - MACHINE_LEARNING_MODEL_TTL=1800
     restart: always
   immich-redis:
     container_name: immich_redis
@@ -509,32 +517,32 @@ services:
     profiles:
       - donotstart
     
-  netdata:
-    image: netdata/netdata
-    container_name: netdata
-    ports:
-      - '19999:19999'
-    pid: host
-    #network_mode: host
-    restart: unless-stopped
-    cap_add:
-      - SYS_PTRACE
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    volumes:
-      - netdataconfig:/etc/netdata
-      - netdatalib:/var/lib/netdata
-      - netdatacache:/var/cache/netdata
-      - /etc/passwd:/host/etc/passwd:ro
-      - /etc/group:/host/etc/group:ro
-      - /etc/localtime:/etc/localtime:ro
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
-      - /var/log:/host/var/log:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /run/dbus:/run/dbus:ro
+  # netdata:
+  #   image: netdata/netdata
+  #   container_name: netdata
+  #   ports:
+  #     - '19999:19999'
+  #   pid: host
+  #   #network_mode: host
+  #   restart: unless-stopped
+  #   cap_add:
+  #     - SYS_PTRACE
+  #     - SYS_ADMIN
+  #   security_opt:
+  #     - apparmor:unconfined
+  #   volumes:
+  #     - netdataconfig:/etc/netdata
+  #     - netdatalib:/var/lib/netdata
+  #     - netdatacache:/var/cache/netdata
+  #     - /etc/passwd:/host/etc/passwd:ro
+  #     - /etc/group:/host/etc/group:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /etc/os-release:/host/etc/os-release:ro
+  #     - /var/log:/host/var/log:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - /run/dbus:/run/dbus:ro
 
 
   scrutiny:
